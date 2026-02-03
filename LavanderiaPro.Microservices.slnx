@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/services/" />
+  <Folder Name="/services/Auth/">
+    <Project Path="services/Auth/Auth.API/Auth.API.csproj" />
+    <Project Path="services/Auth/Auth.Application/Auth.Application.csproj" />
+    <Project Path="services/Auth/Auth.Domain/Auth.Domain.csproj" />
+    <Project Path="services/Auth/Auth.Infrastructure/Auth.Infrastructure.csproj" />
+  </Folder>
+</Solution>
