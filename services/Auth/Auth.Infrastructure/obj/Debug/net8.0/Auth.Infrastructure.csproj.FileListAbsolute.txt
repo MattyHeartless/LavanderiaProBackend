@@ -17,3 +17,4 @@ C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\servi
 C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Auth\Auth.Infrastructure\obj\Debug\net8.0\ref\Auth.Infrastructure.dll
 C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Auth\Auth.Infrastructure\bin\Debug\net8.0\Auth.Infrastructure.runtimeconfig.json
 C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Auth\Auth.Infrastructure\obj\Debug\net8.0\Auth.Infrastructure.genruntimeconfig.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Auth\Auth.Infrastructure\obj\Debug\net8.0\Auth.Infrastructure.sourcelink.json

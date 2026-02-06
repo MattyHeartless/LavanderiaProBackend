@@ -1,0 +1,16 @@
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\bin\Debug\net8.0\Profile.Application.deps.json
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\bin\Debug\net8.0\Profile.Application.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\bin\Debug\net8.0\Profile.Application.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\bin\Debug\net8.0\Profile.Domain.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\bin\Debug\net8.0\Profile.Domain.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\Profile.Application.csproj.AssemblyReference.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\Profile.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\Profile.Application.AssemblyInfoInputs.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\Profile.Application.AssemblyInfo.cs
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\Profile.Application.csproj.CoreCompileInputs.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\Profile.Application.sourcelink.json
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\Profile..63963AFF.Up2Date
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\Profile.Application.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\refint\Profile.Application.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\Profile.Application.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Application\obj\Debug\net8.0\ref\Profile.Application.dll

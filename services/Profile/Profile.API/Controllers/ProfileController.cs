@@ -66,4 +66,12 @@ public class ProfileController : ControllerBase
         await _profileRepository.DeletePaymentMethodAsync(methodId, userId);
         return Ok(new { message = "Payment method deleted successfully" });
     }
+
+    [HttpPut("payment-methods/{methodId}")]
+    public async Task<IActionResult> UpdatePaymentMethod(int methodId, [FromBody] UserPaymentMethod method)
+    {
+        method.Id = methodId;
+        await _profileRepository.UpdatePaymentMethodAsync(method);
+        return Ok(new { message = "Payment method updated successfully" });
+    }
 }

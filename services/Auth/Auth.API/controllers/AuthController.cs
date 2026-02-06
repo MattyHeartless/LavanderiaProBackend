@@ -23,10 +23,11 @@ namespace LavanderiaProBackend.Auth.API.Controllers
           [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
+        RegisterResponse response;
         try
         {
-            await _authService.RegisterAsync(request);
-            return Ok(new { message = "User registered successfully" });
+            response = await _authService.RegisterAsync(request);
+            return Ok(response);
         }
         catch (InvalidOperationException ex)
         {
@@ -37,10 +38,11 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
+        LoginResponse response;
         try
         {
-            await _authService.LoginAsync(request);
-            return Ok(new { message = "Login successful" });
+            response = await _authService.LoginAsync(request);
+            return Ok(response);
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -65,6 +67,24 @@ namespace LavanderiaProBackend.Auth.API.Controllers
             return BadRequest(new { message = ex.Message });
         }
     }
+    
+    [HttpPut("update-user/{userId}")]
+    public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserRequest request)
+    {
+        UpdateUserResponse response;
+        try
+        {
+            response = await _authService.UpdateUserAsync(userId, request);
+            return Ok(response);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
-
+}
 }

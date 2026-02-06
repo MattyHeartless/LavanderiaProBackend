@@ -6,4 +6,16 @@
     <Project Path="services/Auth/Auth.Domain/Auth.Domain.csproj" />
     <Project Path="services/Auth/Auth.Infrastructure/Auth.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/services/Catalogs/">
+    <Project Path="services/Catalogs/Catalogs.API/Catalogs.API.csproj" />
+    <Project Path="services/Catalogs/Catalogs.Application/Catalogs.Application.csproj" />
+    <Project Path="services/Catalogs/Catalogs.Domain/Catalogs.Domain.csproj" />
+    <Project Path="services/Catalogs/Catalogs.Infrastructure/Catalogs.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/services/Profile/">
+    <Project Path="services/Profile/Profile.API/Profile.API.csproj" />
+    <Project Path="services/Profile/Profile.Application/Profile.Application.csproj" />
+    <Project Path="services/Profile/Profile.Domain/Profile.Domain.csproj" />
+    <Project Path="services/Profile/Profile.Infrastructure/Profile.Infrastructure.csproj" />
+  </Folder>
 </Solution>

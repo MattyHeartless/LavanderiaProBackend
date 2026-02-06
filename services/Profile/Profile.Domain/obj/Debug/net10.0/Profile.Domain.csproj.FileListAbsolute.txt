@@ -1,0 +1,12 @@
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\bin\Debug\net10.0\Profile.Domain.deps.json
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\bin\Debug\net10.0\Profile.Domain.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\bin\Debug\net10.0\Profile.Domain.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\obj\Debug\net10.0\Profile.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\obj\Debug\net10.0\Profile.Domain.AssemblyInfoInputs.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\obj\Debug\net10.0\Profile.Domain.AssemblyInfo.cs
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\obj\Debug\net10.0\Profile.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\obj\Debug\net10.0\Profile.Domain.sourcelink.json
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\obj\Debug\net10.0\Profile.Domain.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\obj\Debug\net10.0\refint\Profile.Domain.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\obj\Debug\net10.0\Profile.Domain.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Profile\Profile.Domain\obj\Debug\net10.0\ref\Profile.Domain.dll

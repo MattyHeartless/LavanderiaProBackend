@@ -1,0 +1,12 @@
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\bin\Debug\net8.0\Catalogs.Domain.deps.json
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\bin\Debug\net8.0\Catalogs.Domain.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\bin\Debug\net8.0\Catalogs.Domain.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\obj\Debug\net8.0\Catalogs.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\obj\Debug\net8.0\Catalogs.Domain.AssemblyInfoInputs.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\obj\Debug\net8.0\Catalogs.Domain.AssemblyInfo.cs
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\obj\Debug\net8.0\Catalogs.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\obj\Debug\net8.0\Catalogs.Domain.sourcelink.json
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\obj\Debug\net8.0\Catalogs.Domain.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\obj\Debug\net8.0\refint\Catalogs.Domain.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\obj\Debug\net8.0\Catalogs.Domain.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Domain\obj\Debug\net8.0\ref\Catalogs.Domain.dll

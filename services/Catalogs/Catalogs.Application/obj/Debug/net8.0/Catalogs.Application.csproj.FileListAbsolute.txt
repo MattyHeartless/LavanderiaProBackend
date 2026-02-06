@@ -1,0 +1,16 @@
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\bin\Debug\net8.0\Catalogs.Application.deps.json
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\bin\Debug\net8.0\Catalogs.Application.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\bin\Debug\net8.0\Catalogs.Application.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\bin\Debug\net8.0\Catalogs.Domain.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\bin\Debug\net8.0\Catalogs.Domain.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\Catalogs.Application.csproj.AssemblyReference.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\Catalogs.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\Catalogs.Application.AssemblyInfoInputs.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\Catalogs.Application.AssemblyInfo.cs
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\Catalogs.Application.csproj.CoreCompileInputs.cache
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\Catalogs.Application.sourcelink.json
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\Catalogs.F90260D8.Up2Date
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\Catalogs.Application.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\refint\Catalogs.Application.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\Catalogs.Application.pdb
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.Application\obj\Debug\net8.0\ref\Catalogs.Application.dll
