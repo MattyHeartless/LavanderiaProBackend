@@ -8,5 +8,7 @@ namespace Catalogs.Domain.Entities
         public decimal Price { get; set; }
         public string UoM { get; set; }
         public Boolean IsActive { get; set; }
+        public string Icon { get; set; }
+        public string ThemeIcon { get; set; }
     }
 }
