@@ -16,7 +16,7 @@ public class CatalogsRepository : ICatalogsRepository
     }
 
     // Service methods
-    public async Task<Service> GetServiceById(int id)
+    public async Task<Service> GetServiceById(Guid id)
         => await _context.Services.FirstOrDefaultAsync(x => x.Id == id);
 
     public async Task<IEnumerable<Service>> GetAllServices()
@@ -36,7 +36,7 @@ public class CatalogsRepository : ICatalogsRepository
         return service;
     }
 
-    public async Task<bool> DeleteService(int id)
+    public async Task<bool> DeleteService(Guid id)
     {
         var service = await _context.Services.FirstOrDefaultAsync(x => x.Id == id);
         if (service == null) return false;
@@ -47,7 +47,7 @@ public class CatalogsRepository : ICatalogsRepository
     }
 
     // Courier methods
-    public async Task<Courier> GetCourierById(int id)
+    public async Task<Courier> GetCourierById(Guid id)
         => await _context.Couriers.FirstOrDefaultAsync(x => x.Id == id);
 
     public async Task<IEnumerable<Courier>> GetAllCouriers()
@@ -67,7 +67,7 @@ public class CatalogsRepository : ICatalogsRepository
         return courier;
     }
 
-    public async Task<bool> DeleteCourier(int id)
+    public async Task<bool> DeleteCourier(Guid id)
     {
         var courier = await _context.Couriers.FirstOrDefaultAsync(x => x.Id == id);
         if (courier == null) return false;

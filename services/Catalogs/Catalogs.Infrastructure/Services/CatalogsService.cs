@@ -13,7 +13,7 @@ public class CatalogsService
     }
 
     // Service methods
-    public async Task<Service> GetServiceByIdAsync(int id)
+    public async Task<Service> GetServiceByIdAsync(Guid id)
     {
         return await _catalogsRepository.GetServiceById(id);
     }
@@ -33,13 +33,13 @@ public class CatalogsService
         return await _catalogsRepository.UpdateService(service);
     }
 
-    public async Task<bool> DeleteServiceAsync(int id)
+    public async Task<bool> DeleteServiceAsync(Guid id)
     {
         return await _catalogsRepository.DeleteService(id);
     }
 
     // Courier methods
-    public async Task<Courier> GetCourierByIdAsync(int id)
+    public async Task<Courier> GetCourierByIdAsync(Guid id)
     {
         return await _catalogsRepository.GetCourierById(id);
     }
@@ -59,7 +59,7 @@ public class CatalogsService
         return await _catalogsRepository.UpdateCourier(courier);
     }
 
-    public async Task<bool> DeleteCourierAsync(int id)
+    public async Task<bool> DeleteCourierAsync(Guid id)
     {
         return await _catalogsRepository.DeleteCourier(id);
     }

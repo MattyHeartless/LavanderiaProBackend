@@ -16,11 +16,31 @@ namespace Catalogs.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+                    base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(
-                typeof(CatalogsDbContext).Assembly
-            );
+                modelBuilder.Entity<Service>(builder =>
+                {
+                    builder.HasKey(x => x.Id);
+
+                    builder.Property(x => x.Id)
+                        .ValueGeneratedOnAdd();
+
+                    builder.Property(x => x.Name)
+                        .IsRequired()
+                        .HasMaxLength(100);
+                });
+
+                modelBuilder.Entity<Courier>(builder =>
+                {
+                    builder.HasKey(x => x.Id);
+
+                    builder.Property(x => x.Id)
+                        .ValueGeneratedOnAdd();
+
+                    builder.Property(x => x.Name)
+                        .IsRequired()
+                        .HasMaxLength(100);
+                });
         }
     }
 }

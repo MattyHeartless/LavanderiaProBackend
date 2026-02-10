@@ -12,6 +12,12 @@
     <Project Path="services/Catalogs/Catalogs.Domain/Catalogs.Domain.csproj" />
     <Project Path="services/Catalogs/Catalogs.Infrastructure/Catalogs.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/services/Orders/">
+    <Project Path="services/Orders/Orders.API/Orders.API.csproj" />
+    <Project Path="services/Orders/Orders.Application/Orders.Application.csproj" />
+    <Project Path="services/Orders/Orders.Domain/Orders.Domain.csproj" />
+    <Project Path="services/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/services/Profile/">
     <Project Path="services/Profile/Profile.API/Profile.API.csproj" />
     <Project Path="services/Profile/Profile.Application/Profile.Application.csproj" />

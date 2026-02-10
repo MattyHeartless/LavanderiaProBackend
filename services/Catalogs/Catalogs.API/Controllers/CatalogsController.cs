@@ -24,7 +24,7 @@ public class CatalogsController : ControllerBase
     }
 
     [HttpGet("services/{id}")]
-    public async Task<IActionResult> GetService(int id)
+    public async Task<IActionResult> GetService(Guid id)
     {
         var service = await _catalogsService.GetServiceByIdAsync(id);
         return Ok(new { service });
@@ -38,7 +38,7 @@ public class CatalogsController : ControllerBase
     }
 
     [HttpPut("services/{id}")]
-    public async Task<IActionResult> UpdateService(int id, [FromBody] Service service)
+    public async Task<IActionResult> UpdateService(Guid id, [FromBody] Service service)
     {
         service.Id = id;
         var updatedService = await _catalogsService.UpdateServiceAsync(service);
@@ -46,7 +46,7 @@ public class CatalogsController : ControllerBase
     }
 
     [HttpDelete("services/{id}")]
-    public async Task<IActionResult> DeleteService(int id)
+    public async Task<IActionResult> DeleteService(Guid id)
     {
         var result = await _catalogsService.DeleteServiceAsync(id);
         return Ok(new { message = "Service deleted successfully", success = result });
@@ -61,7 +61,7 @@ public class CatalogsController : ControllerBase
     }
 
     [HttpGet("couriers/{id}")]
-    public async Task<IActionResult> GetCourier(int id)
+    public async Task<IActionResult> GetCourier(Guid id)
     {
         var courier = await _catalogsService.GetCourierByIdAsync(id);
         return Ok(new { courier });
@@ -75,7 +75,7 @@ public class CatalogsController : ControllerBase
     }
 
     [HttpPut("couriers/{id}")]
-    public async Task<IActionResult> UpdateCourier(int id, [FromBody] Courier courier)
+    public async Task<IActionResult> UpdateCourier(Guid id, [FromBody] Courier courier)
     {
         courier.Id = id;
         var updatedCourier = await _catalogsService.UpdateCourierAsync(courier);
@@ -83,7 +83,7 @@ public class CatalogsController : ControllerBase
     }
 
     [HttpDelete("couriers/{id}")]
-    public async Task<IActionResult> DeleteCourier(int id)
+    public async Task<IActionResult> DeleteCourier(Guid id)
     {
         var result = await _catalogsService.DeleteCourierAsync(id);
         return Ok(new { message = "Courier deleted successfully", success = result });
