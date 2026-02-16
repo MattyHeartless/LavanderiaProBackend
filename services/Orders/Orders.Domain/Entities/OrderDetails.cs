@@ -11,6 +11,7 @@ public class OrderDetail
 
     public int Quantity { get; set; }
     public decimal ServicePrice { get; set; }
+    public string UoM { get; set; } = default!;
 
     public decimal SubTotal => Quantity * ServicePrice;
 }

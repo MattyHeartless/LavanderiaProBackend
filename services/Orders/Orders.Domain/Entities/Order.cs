@@ -18,7 +18,10 @@ public class Order
 
     public decimal TotalAmount { get; set; }
     public decimal DeliveryFee { get; set; }
-    public int? CourierId { get; set; }
+    public string CourierName { get; set; }
+    public string? CourierPhone { get; set; }
+    public Guid? CourierGuid { get; set;}
+    
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? RecollectedAt { get; set; }
     public DateTime? DeliveredAt { get; set; }

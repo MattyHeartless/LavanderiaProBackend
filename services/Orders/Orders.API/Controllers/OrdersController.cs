@@ -23,10 +23,11 @@ public class OrdersController : ControllerBase
         Guid orderId,
         CancellationToken cancellationToken = default)
     {
-        var order = await _orderService.GetByIdAsync(orderId, cancellationToken);
-        if (order == null)
+        var resp = await _orderService.GetByIdAsync(orderId, cancellationToken);
+        var respDetails = await _orderService.GetOrderDetailsByOrderId(orderId, cancellationToken);
+        if (resp == null)
             return NotFound(new { message = "Order not found" });
-        return Ok(new { message = "Order retrieved successfully", data = order });
+        return Ok(new { message = "Order retrieved successfully", order = resp, orderDetails = respDetails });
     }
 
     [HttpGet("user/{userId}")]

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Orders.Application.DTOs;
 using Orders.Application.Repositories;
 using Orders.Domain.Entities;
 
@@ -23,15 +24,33 @@ public class OrderRepository : IOrderRepository
             .FirstOrDefaultAsync(o => o.Id == orderId, cancellationToken);
     }
 
-    public async Task<IEnumerable<Order>> GetByUserIdAsync(
-        string userId,
+      public async Task<List<OrderDetail>> GetOrderDetailsByOrderId(
+        Guid orderId,
         CancellationToken cancellationToken = default)
     {
-        return await _context.Orders
-            .Where(o => o.UserId == userId)
-            .OrderByDescending(o => o.CreatedAt)
+        return await _context.OrderDetails
+            .Where(o => o.OrderId == orderId)
             .ToListAsync(cancellationToken);
     }
+
+   public async Task<IEnumerable<RetrieveOrders>> GetByUserIdAsync(
+    string userId, 
+    CancellationToken cancellationToken = default)
+{
+    return await _context.Orders
+        .Where(o => o.UserId == userId)
+        .OrderByDescending(o => o.CreatedAt)
+        .Select(o => new RetrieveOrders
+        {
+            Order = o,
+            // Aquí hacemos la búsqueda manual de los detalles por Id
+            OrderDetails = _context.OrderDetails
+                .Where(d => d.OrderId == o.Id)
+                .ToList()
+        })
+        .AsNoTracking()
+        .ToListAsync(cancellationToken);
+}
 
     public async Task<Guid> AddAsync(
         Order order,
@@ -58,4 +77,6 @@ public class OrderRepository : IOrderRepository
         _context.Orders.Update(order);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+
 }

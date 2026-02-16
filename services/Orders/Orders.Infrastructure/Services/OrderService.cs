@@ -1,3 +1,4 @@
+using Orders.Application.DTOs;
 using Orders.Application.Repositories;
 using Orders.Domain.Entities;
 
@@ -19,9 +20,9 @@ public class OrderService : IOrderRepository
         return await _orderRepository.GetByIdAsync(orderId, cancellationToken);
     }
 
-    public async Task<IEnumerable<Order>> GetByUserIdAsync(
-        string userId,
-        CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<RetrieveOrders>> GetByUserIdAsync(
+    string userId, 
+    CancellationToken cancellationToken = default)
     {
         return await _orderRepository.GetByUserIdAsync(userId, cancellationToken);
     }
@@ -49,8 +50,13 @@ public class OrderService : IOrderRepository
         await _orderRepository.UpdateAsync(order, cancellationToken);
     }
 
-    public Task AddDetailAsync(OrderDetail detail, CancellationToken cancellationToken)
+    public async Task AddDetailAsync(OrderDetail detail, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<List<OrderDetail>> GetOrderDetailsByOrderId(Guid orderId, CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.GetOrderDetailsByOrderId(orderId, cancellationToken);
     }
 }

@@ -28,8 +28,15 @@ namespace Orders.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("CourierId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CourierGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CourierName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CourierPhone")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -103,6 +110,10 @@ namespace Orders.Infrastructure.Migrations
 
                     b.Property<decimal>("ServicePrice")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UoM")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

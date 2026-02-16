@@ -7,3 +7,11 @@ public class CreateOrderRequest
     public List<OrderDetail> OrderDetails { get; set; } = default!;
 
 }
+
+
+public class RetrieveOrders
+{
+    public Order Order { get; set; } = default!;
+    
+    public List<OrderDetail> OrderDetails { get; set; } = new();
+}
