@@ -49,6 +49,29 @@ namespace LavanderiaProBackend.Auth.API.Controllers
             return Unauthorized(new { message = ex.Message });
         }
     }
+    
+        [HttpPost("login-admin")]
+    public async Task<IActionResult> LoginAdmin([FromBody] LoginRequest request)
+    {
+        LoginResponse response;
+        try
+        {
+            response = await _authService.LoginAdminAsync(request);
+            return Ok(response);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+    }
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _authService.GetAllUsers();
+        return Ok(users);
+    }
+
 
      [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)

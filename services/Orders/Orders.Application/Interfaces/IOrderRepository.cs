@@ -5,6 +5,8 @@ namespace Orders.Application.Repositories;
 
 public interface IOrderRepository
 {
+    Task<IEnumerable<RetrieveOrders>> GetAllAsync(CancellationToken cancellationToken = default);
+
     Task<Order?> GetByIdAsync(Guid orderId, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<RetrieveOrders>> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default);

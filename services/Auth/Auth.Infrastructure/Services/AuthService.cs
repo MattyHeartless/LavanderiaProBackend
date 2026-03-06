@@ -78,6 +78,66 @@ public class AuthService : IAuthService
     };
     }
 
+     public async Task<LoginResponse> LoginAdminAsync(LoginRequest request)
+    {
+       // 1. Buscamos al usuario por email para poder acceder a sus datos después
+    var user = await _userManager.FindByEmailAsync(request.Email);
+    
+    if (user == null)
+        throw new UnauthorizedAccessException("Invalid credentials");
+
+    // 2. Verificamos la contraseña
+    var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+
+    if (!result.Succeeded)
+    {
+        // Si el login falla por bloqueo de cuenta (Lockout)
+        if (result.IsLockedOut)
+            throw new UnauthorizedAccessException("Account is locked");
+            
+        throw new UnauthorizedAccessException("Invalid credentials");
+    }
+
+    // 3. Generar el Token (Aquí iría tu lógica de JWT)
+// Check if user is admin
+var roles = await _userManager.GetRolesAsync(user);
+
+if (!roles.Contains("Admin"))
+    throw new UnauthorizedAccessException("User is not an administrator");
+
+    // 4. Devolver el DTO con la info que Angular necesita
+    return new LoginResponse
+    {
+        Email = user.Email,
+        FullName = user.FullName,
+        id = user.Id,
+        PhoneNumber = user.PhoneNumber,
+    };
+    }
+
+    public async Task<List<UserSummaryResponse>> GetAllUsers()
+    {
+        var allUsers = _userManager.Users.ToList();
+        var nonAdminUsers = new List<UserSummaryResponse>();
+
+        foreach (var user in allUsers)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Contains("Admin"))
+            {
+                nonAdminUsers.Add(new UserSummaryResponse
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    PhoneNumber = user.PhoneNumber
+                });
+            }
+        }
+
+        return nonAdminUsers;
+    }
+
     public async Task ChangePasswordAsync(ChangePasswordRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);

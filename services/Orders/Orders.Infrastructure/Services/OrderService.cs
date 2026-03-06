@@ -20,6 +20,11 @@ public class OrderService : IOrderRepository
         return await _orderRepository.GetByIdAsync(orderId, cancellationToken);
     }
 
+    public async Task<IEnumerable<RetrieveOrders>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.GetAllAsync(cancellationToken);
+    }
+
     public async Task<IEnumerable<RetrieveOrders>> GetByUserIdAsync(
     string userId, 
     CancellationToken cancellationToken = default)

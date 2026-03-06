@@ -24,6 +24,21 @@ public class OrderRepository : IOrderRepository
             .FirstOrDefaultAsync(o => o.Id == orderId, cancellationToken);
     }
 
+    public async Task<IEnumerable<RetrieveOrders>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Orders
+            .OrderByDescending(o => o.CreatedAt)
+            .Select(o => new RetrieveOrders
+            {
+                Order = o,
+                OrderDetails = _context.OrderDetails
+                    .Where(d => d.OrderId == o.Id)
+                    .ToList()
+            })
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+
       public async Task<List<OrderDetail>> GetOrderDetailsByOrderId(
         Guid orderId,
         CancellationToken cancellationToken = default)

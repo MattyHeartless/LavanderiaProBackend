@@ -18,6 +18,13 @@ public class OrdersController : ControllerBase
         _orderService = orderService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
+    {
+        var orders = await _orderService.GetAllAsync(cancellationToken);
+        return Ok(new { message = "Orders retrieved successfully", data = orders });
+    }
+
     [HttpGet("{orderId}")]
     public async Task<IActionResult> GetById(
         Guid orderId,
