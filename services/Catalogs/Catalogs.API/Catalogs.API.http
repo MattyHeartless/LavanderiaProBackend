@@ -1,6 +1,19 @@
 @Catalogs.API_HostAddress = http://localhost:5009
+@courierId = 00000000-0000-0000-0000-000000000001
 
 GET {{Catalogs.API_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+POST {{Catalogs.API_HostAddress}}/api/Catalogs/couriers/{{courierId}}/profile-image
+Content-Type: multipart/form-data; boundary=boundary123
+
+--boundary123
+Content-Disposition: form-data; name="file"; filename="profile.jpg"
+Content-Type: image/jpeg
+
+< ./profile.jpg
+--boundary123--
 
 ###

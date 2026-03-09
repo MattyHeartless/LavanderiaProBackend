@@ -12,6 +12,7 @@ namespace Catalogs.Infrastructure.Services
 
 
         Task<Courier> GetCourierById(Guid id);
+        Task<Courier> GetCourierByAuthUserId(string authUserId);
         Task<IEnumerable<Courier>> GetAllCouriers();
         Task<Courier> AddCourier(Courier courier);
         Task<Courier> UpdateCourier(Courier courier);

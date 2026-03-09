@@ -50,6 +50,9 @@ public class CatalogsRepository : ICatalogsRepository
     public async Task<Courier> GetCourierById(Guid id)
         => await _context.Couriers.FirstOrDefaultAsync(x => x.Id == id);
 
+    public async Task<Courier> GetCourierByAuthUserId(string authUserId)
+        => await _context.Couriers.FirstOrDefaultAsync(x => x.AuthUserId == authUserId);
+
     public async Task<IEnumerable<Courier>> GetAllCouriers()
         => await _context.Couriers.ToListAsync();
 

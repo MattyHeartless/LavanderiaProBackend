@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Catalogs.API.DTOs;
 using Catalogs.Infrastructure.Services;
 using Catalogs.Domain.Entities;
 
@@ -9,10 +10,12 @@ namespace Catalogs.API.Controllers;
 public class CatalogsController : ControllerBase
 {
     private readonly CatalogsService _catalogsService;
+    private readonly IFileStorageService _fileStorageService;
 
-    public CatalogsController(CatalogsService catalogsService)
+    public CatalogsController(CatalogsService catalogsService, IFileStorageService fileStorageService)
     {
         _catalogsService = catalogsService;
+        _fileStorageService = fileStorageService;
     }
 
     // Services
@@ -64,7 +67,64 @@ public class CatalogsController : ControllerBase
     public async Task<IActionResult> GetCourier(Guid id)
     {
         var courier = await _catalogsService.GetCourierByIdAsync(id);
+        if (courier == null)
+            return NotFound(new { message = "Courier not found" });
+
         return Ok(new { courier });
+    }
+
+    [HttpGet("couriers/by-auth-user/{authUserId}")]
+    public async Task<IActionResult> GetCourierByAuthUserId(string authUserId)
+    {
+        var courier = await _catalogsService.GetCourierByAuthUserIdAsync(authUserId);
+        if (courier == null)
+            return NotFound(new { message = "Courier not found" });
+
+        return Ok(new { courier });
+    }
+
+    [HttpPost("couriers/{courierId}/profile-image")]
+    [ProducesResponseType(typeof(UploadProfileImageResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UploadCourierProfileImage(Guid courierId, [FromForm] UploadProfileImageRequest request)
+    {
+        if (request.File == null)
+            return BadRequest(new { message = "File is required" });
+
+        var courier = await _catalogsService.GetCourierByIdAsync(courierId);
+        if (courier == null)
+            return NotFound(new { message = "Courier not found" });
+
+        try
+        {
+            var previousImage = courier.ProfileImageUrl;
+            var storedFile = await _fileStorageService.SaveCourierProfileImageAsync(request.File);
+
+            courier.ProfileImageUrl = storedFile.PublicUrl;
+            await _catalogsService.UpdateCourierAsync(courier);
+
+            if (!string.IsNullOrWhiteSpace(previousImage))
+            {
+                await _fileStorageService.DeleteByRelativePathAsync(previousImage);
+            }
+
+            return Ok(new UploadProfileImageResponse
+            {
+                Message = "Profile image uploaded",
+                ImageUrl = storedFile.PublicUrl,
+                RelativePath = storedFile.RelativePath
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Unexpected error uploading profile image" });
+        }
     }
 
     [HttpPost("couriers")]

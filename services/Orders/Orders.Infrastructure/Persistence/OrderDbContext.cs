@@ -12,6 +12,7 @@ public class OrdersDbContext : DbContext
 
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
+    public DbSet<OrderEvidence> OrderEvidences => Set<OrderEvidence>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
@@ -76,6 +77,33 @@ public class OrdersDbContext : DbContext
                 .HasMaxLength(20)
                 .IsRequired();
         });
+    });
+
+    modelBuilder.Entity<OrderEvidence>(builder =>
+    {
+        builder.ToTable("OrderEvidences");
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.FileUrl)
+            .IsRequired()
+            .HasMaxLength(500);
+
+        builder.Property(x => x.RelativePath)
+            .IsRequired()
+            .HasMaxLength(500);
+
+        builder.Property(x => x.MimeType)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(x => x.Note)
+            .HasMaxLength(500);
+
+        builder.Property(x => x.CreatedAt)
+            .IsRequired();
+
+        builder.HasIndex(x => x.OrderId);
+        builder.HasIndex(x => x.CreatedAt);
     });
 }
 

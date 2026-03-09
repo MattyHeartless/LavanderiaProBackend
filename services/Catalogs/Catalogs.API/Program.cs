@@ -2,6 +2,7 @@ using Catalogs.Infrastructure.Persistence;
 using Catalogs.Infrastructure.Repositories;
 using Catalogs.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<CatalogsDbContext>(options =>
 );
 builder.Services.AddScoped<ICatalogsRepository,CatalogsRepository >();
 builder.Services.AddScoped<CatalogsService>();
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -32,6 +34,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 var app = builder.Build();
 
+var imagesRootPath = builder.Configuration["Storage:ImagesRootPath"]
+    ?? @"C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\images";
+
+Directory.CreateDirectory(imagesRootPath);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -40,6 +47,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(imagesRootPath),
+    RequestPath = "/images"
+});
 app.UseAuthorization();
 app.UseCors("AllowAngular");
 app.MapControllers();

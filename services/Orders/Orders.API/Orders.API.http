@@ -1,6 +1,28 @@
 @Orders.API_HostAddress = http://localhost:5252
+@orderId = 00000000-0000-0000-0000-000000000001
 
 GET {{Orders.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+POST {{Orders.API_HostAddress}}/api/Orders/{{orderId}}/evidences
+Content-Type: multipart/form-data; boundary=boundary123
+
+--boundary123
+Content-Disposition: form-data; name="file"; filename="evidence.jpg"
+Content-Type: image/jpeg
+
+< ./evidence.jpg
+--boundary123
+Content-Disposition: form-data; name="note"
+
+Entregado al cliente
+--boundary123--
+
+###
+
+GET {{Orders.API_HostAddress}}/api/Orders/{{orderId}}/evidences
 Accept: application/json
 
 ###

@@ -28,6 +28,9 @@ namespace Catalogs.Infrastructure.Persistence
                     builder.Property(x => x.Name)
                         .IsRequired()
                         .HasMaxLength(100);
+
+                    builder.Property(x => x.Price)
+                        .HasPrecision(18, 2);
                 });
 
                 modelBuilder.Entity<Courier>(builder =>
@@ -40,6 +43,9 @@ namespace Catalogs.Infrastructure.Persistence
                     builder.Property(x => x.Name)
                         .IsRequired()
                         .HasMaxLength(100);
+
+                    builder.Property(x => x.ProfileImageUrl)
+                        .HasMaxLength(500);
                 });
         }
     }

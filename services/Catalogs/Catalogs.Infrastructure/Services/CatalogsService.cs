@@ -44,6 +44,11 @@ public class CatalogsService
         return await _catalogsRepository.GetCourierById(id);
     }
 
+    public async Task<Courier> GetCourierByAuthUserIdAsync(string authUserId)
+    {
+        return await _catalogsRepository.GetCourierByAuthUserId(authUserId);
+    }
+
     public async Task<IEnumerable<Courier>> GetAllCouriersAsync()
     {
         return await _catalogsRepository.GetAllCouriers();

@@ -93,5 +93,20 @@ public class OrderRepository : IOrderRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<OrderEvidence> AddOrderEvidenceAsync(OrderEvidence evidence, CancellationToken cancellationToken = default)
+    {
+        await _context.OrderEvidences.AddAsync(evidence, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+        return evidence;
+    }
+
+    public async Task<List<OrderEvidence>> GetOrderEvidencesByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default)
+    {
+        return await _context.OrderEvidences
+            .Where(x => x.OrderId == orderId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
 
 }

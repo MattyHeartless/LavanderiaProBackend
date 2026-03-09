@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Orders.Application.Repositories;
 using Orders.Infrastructure.Persistence;
 using Orders.Infrastructure.Repositories;
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<OrdersDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OrdersDb")));
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,6 +32,11 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+var imagesRootPath = builder.Configuration["Storage:ImagesRootPath"]
+    ?? @"C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Orders\images";
+
+Directory.CreateDirectory(imagesRootPath);
+
 app.UseCors("AllowAngular");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -39,6 +46,11 @@ if (app.Environment.IsDevelopment())
 }
 app.MapControllers();
 app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(imagesRootPath),
+    RequestPath = "/images"
+});
 app.UseAuthentication(); 
 var summaries = new[]
 {

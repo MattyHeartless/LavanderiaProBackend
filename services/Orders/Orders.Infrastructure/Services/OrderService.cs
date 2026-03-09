@@ -64,4 +64,14 @@ public class OrderService : IOrderRepository
     {
         return await _orderRepository.GetOrderDetailsByOrderId(orderId, cancellationToken);
     }
+
+    public async Task<OrderEvidence> AddOrderEvidenceAsync(OrderEvidence evidence, CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.AddOrderEvidenceAsync(evidence, cancellationToken);
+    }
+
+    public async Task<List<OrderEvidence>> GetOrderEvidencesByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.GetOrderEvidencesByOrderIdAsync(orderId, cancellationToken);
+    }
 }

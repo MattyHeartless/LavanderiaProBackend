@@ -16,4 +16,6 @@ public interface IOrderRepository
     Task UpdateAsync(Order order, CancellationToken cancellationToken = default);
     Task AddDetailAsync(OrderDetail detail, CancellationToken cancellationToken);
     Task<List<OrderDetail>> GetOrderDetailsByOrderId(Guid orderId,CancellationToken cancellationToken = default);
+    Task<OrderEvidence> AddOrderEvidenceAsync(OrderEvidence evidence, CancellationToken cancellationToken = default);
+    Task<List<OrderEvidence>> GetOrderEvidencesByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default);
 }
