@@ -4,6 +4,7 @@ using Catalogs.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catalogs.Infrastructure.Migrations
 {
     [DbContext(typeof(CatalogsDbContext))]
-    partial class CatalogsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260309205520_AddAuthUserIdToCourier")]
+    partial class AddAuthUserIdToCourier
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

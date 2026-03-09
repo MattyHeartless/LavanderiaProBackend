@@ -11,13 +11,16 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
     public AuthService(
         UserManager<User> userManager,
-        SignInManager<User> signInManager)
+        SignInManager<User> signInManager,
+        RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _roleManager = roleManager;
     }
 
     public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
@@ -43,6 +46,66 @@ public class AuthService : IAuthService
         Email = user.Email,
         FullName = user.FullName
     };
+    }
+
+    public async Task<RegisterResponse> RegisterCourierAsync(RegisterRequest request)
+    {
+        var user = new User
+        {
+            UserName = request.Email,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
+            FullName = request.FullName
+        };
+
+        var createResult = await _userManager.CreateAsync(user, request.Password);
+
+        if (!createResult.Succeeded)
+        {
+            var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
+            throw new InvalidOperationException($"Registration failed: {errors}");
+        }
+
+        const string courierRole = "Courier";
+        var roleExists = await _roleManager.RoleExistsAsync(courierRole);
+
+        if (!roleExists)
+        {
+            var createRoleResult = await _roleManager.CreateAsync(new IdentityRole(courierRole));
+            if (!createRoleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(user);
+                var errors = string.Join(", ", createRoleResult.Errors.Select(e => e.Description));
+                throw new InvalidOperationException($"Courier role creation failed: {errors}");
+            }
+        }
+
+        var addToRoleResult = await _userManager.AddToRoleAsync(user, courierRole);
+        if (!addToRoleResult.Succeeded)
+        {
+            await _userManager.DeleteAsync(user);
+            var errors = string.Join(", ", addToRoleResult.Errors.Select(e => e.Description));
+            throw new InvalidOperationException($"Courier registration failed: {errors}");
+        }
+
+        return new RegisterResponse
+        {
+            Id = user.Id,
+            Email = user.Email,
+            FullName = user.FullName
+        };
+    }
+
+    public async Task<bool> CourierAccountExistsAsync(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+            return false;
+
+        return await _userManager.IsInRoleAsync(user, "Courier");
     }
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
@@ -76,6 +139,37 @@ public class AuthService : IAuthService
         id = user.Id,
         PhoneNumber = user.PhoneNumber,
     };
+    }
+
+    public async Task<LoginResponse> LoginCourierAsync(LoginRequest request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user == null)
+            throw new UnauthorizedAccessException("Invalid credentials");
+
+        var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+
+        if (!result.Succeeded)
+        {
+            if (result.IsLockedOut)
+                throw new UnauthorizedAccessException("Account is locked");
+
+            throw new UnauthorizedAccessException("Invalid credentials");
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        if (!roles.Contains("Courier"))
+            throw new UnauthorizedAccessException("User is not a courier");
+
+        return new LoginResponse
+        {
+            Email = user.Email,
+            FullName = user.FullName,
+            id = user.Id,
+            PhoneNumber = user.PhoneNumber,
+        };
     }
 
      public async Task<LoginResponse> LoginAdminAsync(LoginRequest request)

@@ -35,6 +35,28 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         }
     }
 
+    [HttpPost("register-courier")]
+    public async Task<IActionResult> RegisterCourier([FromBody] RegisterRequest request)
+    {
+        RegisterResponse response;
+        try
+        {
+            response = await _authService.RegisterCourierAsync(request);
+            return Ok(response);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpGet("courier-account-exists")]
+    public async Task<IActionResult> CourierAccountExists([FromQuery] string email)
+    {
+        var exists = await _authService.CourierAccountExistsAsync(email);
+        return Ok(new { exists });
+    }
+
         [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
@@ -42,6 +64,21 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         try
         {
             response = await _authService.LoginAsync(request);
+            return Ok(response);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("login-courier")]
+    public async Task<IActionResult> LoginCourier([FromBody] LoginRequest request)
+    {
+        LoginResponse response;
+        try
+        {
+            response = await _authService.LoginCourierAsync(request);
             return Ok(response);
         }
         catch (UnauthorizedAccessException ex)
