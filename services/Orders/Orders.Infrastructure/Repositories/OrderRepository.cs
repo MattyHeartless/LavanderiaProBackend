@@ -88,7 +88,9 @@ public class OrderRepository : IOrderRepository
         CancellationToken cancellationToken = default)
     {
         return await _context.Orders
-            .Where(o => o.CourierGuid == courierGuid)
+            .Where(o => o.CourierGuid == courierGuid
+                && o.Status >= OrderStatus.Created
+                && o.Status <= OrderStatus.Delivering)
             .OrderByDescending(o => o.CreatedAt)
             .Select(o => new RetrieveOrders
             {
