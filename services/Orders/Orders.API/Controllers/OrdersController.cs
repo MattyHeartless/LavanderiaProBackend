@@ -28,6 +28,13 @@ public class OrdersController : ControllerBase
         return Ok(new { message = "Orders retrieved successfully", data = orders });
     }
 
+    [HttpGet("unassigned")]
+    public async Task<IActionResult> GetUnassigned(CancellationToken cancellationToken = default)
+    {
+        var orders = await _orderService.GetUnassignedAsync(cancellationToken);
+        return Ok(new { message = "Unassigned orders retrieved successfully", data = orders });
+    }
+
     [HttpGet("{orderId}")]
     public async Task<IActionResult> GetById(
         Guid orderId,
@@ -49,6 +56,15 @@ public class OrdersController : ControllerBase
         return Ok(new { message = "Orders retrieved successfully", data = orders });
     }
 
+    [HttpGet("courier/{courierGuid}")]
+    public async Task<IActionResult> GetByCourierGuid(
+        Guid courierGuid,
+        CancellationToken cancellationToken = default)
+    {
+        var orders = await _orderService.GetByCourierGuidAsync(courierGuid, cancellationToken);
+        return Ok(new { message = "Orders retrieved successfully", data = orders });
+    }
+
     [HttpPost]
     public async Task<IActionResult> Add(
         [FromBody] CreateOrderRequest request,
@@ -67,6 +83,25 @@ public class OrdersController : ControllerBase
         order.Id = orderId;
         await _orderService.UpdateAsync(order, cancellationToken);
         return Ok(new { message = "Order updated successfully" });
+    }
+
+    [HttpPatch("{orderId}/assign-courier")]
+    public async Task<IActionResult> AssignCourier(
+        Guid orderId,
+        [FromBody] AssignOrderCourierRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        if (request.CourierGuid == Guid.Empty)
+            return BadRequest(new { message = "CourierGuid is required" });
+
+        if (string.IsNullOrWhiteSpace(request.CourierName))
+            return BadRequest(new { message = "CourierName is required" });
+
+        var updated = await _orderService.AssignCourierAsync(orderId, request, cancellationToken);
+        if (!updated)
+            return NotFound(new { message = "Order not found" });
+
+        return Ok(new { message = "Courier assigned successfully" });
     }
 
     [HttpPost("{orderId}/evidences")]

@@ -15,8 +15,12 @@ public class ProfileDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserAddress>()
-            .HasIndex(x => x.UserId);
+        modelBuilder.Entity<UserAddress>(entity =>
+        {
+            entity.HasIndex(x => x.UserId);
+            entity.Property(x => x.Latitude).HasPrecision(9, 6);
+            entity.Property(x => x.Longitude).HasPrecision(9, 6);
+        });
 
         modelBuilder.Entity<UserPaymentMethod>()
             .HasIndex(x => x.UserId);

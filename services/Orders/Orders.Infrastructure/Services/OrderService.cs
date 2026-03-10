@@ -25,11 +25,23 @@ public class OrderService : IOrderRepository
         return await _orderRepository.GetAllAsync(cancellationToken);
     }
 
+    public async Task<IEnumerable<RetrieveOrders>> GetUnassignedAsync(CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.GetUnassignedAsync(cancellationToken);
+    }
+
     public async Task<IEnumerable<RetrieveOrders>> GetByUserIdAsync(
     string userId, 
     CancellationToken cancellationToken = default)
     {
         return await _orderRepository.GetByUserIdAsync(userId, cancellationToken);
+    }
+
+    public async Task<IEnumerable<RetrieveOrders>> GetByCourierGuidAsync(
+        Guid courierGuid,
+        CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.GetByCourierGuidAsync(courierGuid, cancellationToken);
     }
 
     public async Task<Guid> AddAsync(
@@ -53,6 +65,14 @@ public class OrderService : IOrderRepository
         CancellationToken cancellationToken = default)
     {
         await _orderRepository.UpdateAsync(order, cancellationToken);
+    }
+
+    public async Task<bool> AssignCourierAsync(
+        Guid orderId,
+        AssignOrderCourierRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.AssignCourierAsync(orderId, request, cancellationToken);
     }
 
     public async Task AddDetailAsync(OrderDetail detail, CancellationToken cancellationToken)

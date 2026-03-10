@@ -15,3 +15,10 @@ public class RetrieveOrders
     
     public List<OrderDetail> OrderDetails { get; set; } = new();
 }
+
+public class AssignOrderCourierRequest
+{
+    public Guid CourierGuid { get; set; }
+    public string CourierName { get; set; } = default!;
+    public string? CourierPhone { get; set; }
+}

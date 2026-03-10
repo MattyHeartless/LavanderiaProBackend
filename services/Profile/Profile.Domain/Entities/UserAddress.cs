@@ -11,6 +11,8 @@ namespace Profile.Domain.Entities
         public string State { get; set; }
         public string ZipCode { get; set; }
         public string Country { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
 
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;  
         public DateTime? UpdatedAt { get; set; }

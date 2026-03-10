@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orders.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Orders.Infrastructure.Persistence;
 namespace Orders.Infrastructure.Migrations
 {
     [DbContext(typeof(OrdersDbContext))]
-    partial class OrdersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260310190845_AddShippingAddressCoordinates")]
+    partial class AddShippingAddressCoordinates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

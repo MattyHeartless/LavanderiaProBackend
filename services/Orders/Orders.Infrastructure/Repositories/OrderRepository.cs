@@ -39,6 +39,22 @@ public class OrderRepository : IOrderRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IEnumerable<RetrieveOrders>> GetUnassignedAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Orders
+            .Where(o => !o.CourierGuid.HasValue || o.CourierGuid == Guid.Empty)
+            .OrderByDescending(o => o.CreatedAt)
+            .Select(o => new RetrieveOrders
+            {
+                Order = o,
+                OrderDetails = _context.OrderDetails
+                    .Where(d => d.OrderId == o.Id)
+                    .ToList()
+            })
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+
       public async Task<List<OrderDetail>> GetOrderDetailsByOrderId(
         Guid orderId,
         CancellationToken cancellationToken = default)
@@ -67,6 +83,24 @@ public class OrderRepository : IOrderRepository
         .ToListAsync(cancellationToken);
 }
 
+    public async Task<IEnumerable<RetrieveOrders>> GetByCourierGuidAsync(
+        Guid courierGuid,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.Orders
+            .Where(o => o.CourierGuid == courierGuid)
+            .OrderByDescending(o => o.CreatedAt)
+            .Select(o => new RetrieveOrders
+            {
+                Order = o,
+                OrderDetails = _context.OrderDetails
+                    .Where(d => d.OrderId == o.Id)
+                    .ToList()
+            })
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<Guid> AddAsync(
         Order order,
         IEnumerable<OrderDetail> orderDetails,
@@ -91,6 +125,25 @@ public class OrderRepository : IOrderRepository
     {
         _context.Orders.Update(order);
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<bool> AssignCourierAsync(
+        Guid orderId,
+        AssignOrderCourierRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var order = await _context.Orders
+            .FirstOrDefaultAsync(o => o.Id == orderId, cancellationToken);
+
+        if (order is null)
+            return false;
+
+        order.CourierGuid = request.CourierGuid;
+        order.CourierName = request.CourierName;
+        order.CourierPhone = request.CourierPhone;
+
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
     }
 
     public async Task<OrderEvidence> AddOrderEvidenceAsync(OrderEvidence evidence, CancellationToken cancellationToken = default)

@@ -76,6 +76,12 @@ public class OrdersDbContext : DbContext
             sa.Property(p => p.ZipCode)
                 .HasMaxLength(20)
                 .IsRequired();
+
+            sa.Property(p => p.Latitude)
+                .HasPrecision(9, 6);
+
+            sa.Property(p => p.Longitude)
+                .HasPrecision(9, 6);
         });
     });
 

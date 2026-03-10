@@ -6,6 +6,8 @@ public class ShippingAddress
     public string City { get; private set; }
     public string State { get; private set; }
     public string ZipCode { get; private set; }
+    public decimal? Latitude { get; private set; }
+    public decimal? Longitude { get; private set; }
     
 
     private ShippingAddress() { } // EF
@@ -16,7 +18,9 @@ public class ShippingAddress
         string neighbourhood,
         string city,
         string state,
-        string zipCode)
+        string zipCode,
+        decimal? latitude = null,
+        decimal? longitude = null)
     {
         Title = title;
         Street = street;
@@ -24,5 +28,7 @@ public class ShippingAddress
         City = city;
         State = state;
         ZipCode = zipCode;
+        Latitude = latitude;
+        Longitude = longitude;
     }
 }
