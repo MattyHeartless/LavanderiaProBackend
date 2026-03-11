@@ -4,6 +4,7 @@ public class OrderEvidence
 {
     public Guid Id { get; set; }
     public Guid OrderId { get; set; }
+    public OrderStatus OrderStatusEvidence { get; set; }
     public Guid? CourierId { get; set; }
     public string FileUrl { get; set; } = string.Empty;
     public string RelativePath { get; set; } = string.Empty;

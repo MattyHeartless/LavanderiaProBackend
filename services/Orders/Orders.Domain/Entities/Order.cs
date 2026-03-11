@@ -4,6 +4,8 @@ public class Order
 {
     public Guid Id { get; set; }
     public string UserId { get; set; } = default!;
+    public string? UserName { get; set; }
+    public string? UserPhone { get; set; }
     public int UserAddressId { get; set; }
     public ShippingAddress ShippingAddress { get; set; } = default!;
     public int? UserPaymentMethodId { get; set; }

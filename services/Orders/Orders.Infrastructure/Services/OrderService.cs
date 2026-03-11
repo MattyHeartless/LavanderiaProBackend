@@ -44,6 +44,13 @@ public class OrderService : IOrderRepository
         return await _orderRepository.GetByCourierGuidAsync(courierGuid, cancellationToken);
     }
 
+    public async Task<CourierWorkedOrdersKpisResponse> GetCourierWorkedOrdersKpisAsync(
+        Guid courierGuid,
+        CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.GetCourierWorkedOrdersKpisAsync(courierGuid, cancellationToken);
+    }
+
     public async Task<Guid> AddAsync(
         Order order,
         IEnumerable<OrderDetail> orderDetails,
@@ -75,6 +82,14 @@ public class OrderService : IOrderRepository
         return await _orderRepository.AssignCourierAsync(orderId, request, cancellationToken);
     }
 
+    public async Task<bool> UpdateStatusAsync(
+        Guid orderId,
+        UpdateOrderStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.UpdateStatusAsync(orderId, request, cancellationToken);
+    }
+
     public async Task AddDetailAsync(OrderDetail detail, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
@@ -88,6 +103,11 @@ public class OrderService : IOrderRepository
     public async Task<OrderEvidence> AddOrderEvidenceAsync(OrderEvidence evidence, CancellationToken cancellationToken = default)
     {
         return await _orderRepository.AddOrderEvidenceAsync(evidence, cancellationToken);
+    }
+
+    public async Task<OrderEvidence?> GetOrderEvidenceByIdAsync(Guid evidenceId, CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.GetOrderEvidenceByIdAsync(evidenceId, cancellationToken);
     }
 
     public async Task<List<OrderEvidence>> GetOrderEvidencesByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default)

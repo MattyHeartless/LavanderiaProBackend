@@ -80,8 +80,16 @@ namespace Orders.Infrastructure.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int?>("UserPaymentMethodId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserPhone")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
@@ -148,6 +156,9 @@ namespace Orders.Infrastructure.Migrations
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("OrderStatusEvidence")
+                        .HasColumnType("int");
 
                     b.Property<string>("RelativePath")
                         .IsRequired()

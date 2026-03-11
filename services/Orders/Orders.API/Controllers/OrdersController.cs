@@ -65,6 +65,18 @@ public class OrdersController : ControllerBase
         return Ok(new { message = "Orders retrieved successfully", data = orders });
     }
 
+    [HttpGet("courier/{courierGuid}/kpis")]
+    public async Task<IActionResult> GetCourierWorkedOrdersKpis(
+        Guid courierGuid,
+        CancellationToken cancellationToken = default)
+    {
+        if (courierGuid == Guid.Empty)
+            return BadRequest(new { message = "CourierGuid is required" });
+
+        var kpis = await _orderService.GetCourierWorkedOrdersKpisAsync(courierGuid, cancellationToken);
+        return Ok(new { message = "Courier KPIs retrieved successfully", data = kpis });
+    }
+
     [HttpPost]
     public async Task<IActionResult> Add(
         [FromBody] CreateOrderRequest request,
@@ -104,6 +116,26 @@ public class OrdersController : ControllerBase
         return Ok(new { message = "Courier assigned successfully" });
     }
 
+    [HttpPatch("{orderId}/status")]
+    public async Task<IActionResult> UpdateStatus(
+        Guid orderId,
+        [FromBody] UpdateOrderStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var order = await _orderService.GetByIdAsync(orderId, cancellationToken);
+        if (order == null)
+            return NotFound(new { message = "Order not found" });
+
+        var updated = await _orderService.UpdateStatusAsync(orderId, request, cancellationToken);
+        if (!updated)
+            return BadRequest(new
+            {
+                message = "Invalid status transition. Move the order step-by-step until completion."
+            });
+
+        return Ok(new { message = "Order status updated successfully", status = request.Status });
+    }
+
     [HttpPost("{orderId}/evidences")]
     [ProducesResponseType(typeof(UploadEvidenceResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -129,6 +161,7 @@ public class OrdersController : ControllerBase
             {
                 Id = Guid.NewGuid(),
                 OrderId = orderId,
+                OrderStatusEvidence = order.Status,
                 CourierId = request.CourierId,
                 FileUrl = storedFile.PublicUrl,
                 RelativePath = storedFile.RelativePath,
@@ -172,12 +205,26 @@ public class OrdersController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("evidences/{evidenceId}/image")]
+    public async Task<IActionResult> GetEvidenceImage(
+        Guid evidenceId,
+        CancellationToken cancellationToken = default)
+    {
+        var evidence = await _orderService.GetOrderEvidenceByIdAsync(evidenceId, cancellationToken);
+        if (evidence == null)
+            return NotFound(new { message = "Evidence not found" });
+
+        var imagePath = string.IsNullOrWhiteSpace(evidence.FileUrl) ? evidence.RelativePath : evidence.FileUrl;
+        return Redirect(imagePath);
+    }
+
     private static OrderEvidenceResponse ToEvidenceResponse(OrderEvidence evidence)
     {
         return new OrderEvidenceResponse
         {
             Id = evidence.Id,
             OrderId = evidence.OrderId,
+            OrderStatusEvidence = evidence.OrderStatusEvidence,
             CourierId = evidence.CourierId,
             FileUrl = evidence.FileUrl,
             RelativePath = evidence.RelativePath,

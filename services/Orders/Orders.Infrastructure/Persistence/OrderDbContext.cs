@@ -28,6 +28,12 @@ public class OrdersDbContext : DbContext
             .IsRequired()
             .HasMaxLength(450);
 
+        builder.Property(o => o.UserName)
+            .HasMaxLength(200);
+
+        builder.Property(o => o.UserPhone)
+            .HasMaxLength(30);
+
         builder.Property(o => o.UserAddressId)
             .IsRequired();
 
@@ -104,6 +110,10 @@ public class OrdersDbContext : DbContext
 
         builder.Property(x => x.Note)
             .HasMaxLength(500);
+
+        builder.Property(x => x.OrderStatusEvidence)
+            .HasConversion<int>()
+            .IsRequired();
 
         builder.Property(x => x.CreatedAt)
             .IsRequired();

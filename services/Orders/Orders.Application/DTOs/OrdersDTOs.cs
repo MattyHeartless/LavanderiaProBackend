@@ -22,3 +22,29 @@ public class AssignOrderCourierRequest
     public string CourierName { get; set; } = default!;
     public string? CourierPhone { get; set; }
 }
+
+public class UpdateOrderStatusRequest
+{
+    public OrderStatus Status { get; set; }
+}
+
+public class CourierWorkedOrdersKpisResponse
+{
+    public int CompletedOrdersCount { get; set; }
+    public decimal TotalEarned { get; set; }
+    public List<CompletedOrdersByDayItem> CompletedOrdersByDay { get; set; } = new();
+    public List<RecentCompletedOrderItem> RecentCompletedOrders { get; set; } = new();
+}
+
+public class CompletedOrdersByDayItem
+{
+    public DateOnly Date { get; set; }
+    public int Count { get; set; }
+}
+
+public class RecentCompletedOrderItem
+{
+    public Guid OrderId { get; set; }
+    public DateTime CompletedAt { get; set; }
+    public decimal DeliveryFee { get; set; }
+}

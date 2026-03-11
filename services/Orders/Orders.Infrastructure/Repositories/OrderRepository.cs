@@ -103,6 +103,55 @@ public class OrderRepository : IOrderRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<CourierWorkedOrdersKpisResponse> GetCourierWorkedOrdersKpisAsync(
+        Guid courierGuid,
+        CancellationToken cancellationToken = default)
+    {
+        var completedOrders = await _context.Orders
+            .Where(o => o.CourierGuid == courierGuid && o.Status == OrderStatus.Completed)
+            .Select(o => new
+            {
+                o.Id,
+                o.DeliveryFee,
+                CompletedAt = (o.DeliveredAt ?? o.CreatedAt)
+            })
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        var groupedCounts = completedOrders
+            .GroupBy(x => x.CompletedAt.Date)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        var today = DateTime.UtcNow.Date;
+        var completedOrdersByDay = Enumerable.Range(-3, 7)
+            .Select(offset => today.AddDays(offset))
+            .Select(day => new CompletedOrdersByDayItem
+            {
+                Date = DateOnly.FromDateTime(day),
+                Count = groupedCounts.TryGetValue(day, out var count) ? count : 0
+            })
+            .ToList();
+
+        var recentCompletedOrders = completedOrders
+            .OrderByDescending(x => x.CompletedAt)
+            .Take(3)
+            .Select(x => new RecentCompletedOrderItem
+            {
+                OrderId = x.Id,
+                CompletedAt = x.CompletedAt,
+                DeliveryFee = x.DeliveryFee
+            })
+            .ToList();
+
+        return new CourierWorkedOrdersKpisResponse
+        {
+            CompletedOrdersCount = completedOrders.Count,
+            TotalEarned = completedOrders.Sum(x => x.DeliveryFee),
+            CompletedOrdersByDay = completedOrdersByDay,
+            RecentCompletedOrders = recentCompletedOrders
+        };
+    }
+
     public async Task<Guid> AddAsync(
         Order order,
         IEnumerable<OrderDetail> orderDetails,
@@ -148,11 +197,55 @@ public class OrderRepository : IOrderRepository
         return true;
     }
 
+    public async Task<bool> UpdateStatusAsync(
+        Guid orderId,
+        UpdateOrderStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var order = await _context.Orders
+            .FirstOrDefaultAsync(o => o.Id == orderId, cancellationToken);
+
+        if (order is null)
+            return false;
+
+        var currentStatus = (int)order.Status;
+        var newStatus = (int)request.Status;
+
+        // Allow step-by-step transitions; special rule allows jumping to Recollecting from Created or Paid.
+        var isSequentialTransition = newStatus == currentStatus + 1;
+        var isValidRecollectingTransition = request.Status == OrderStatus.Recollecting
+            && (order.Status == OrderStatus.Created || order.Status == OrderStatus.Paid);
+        var isValidCancellation = request.Status == OrderStatus.Cancelled
+            && order.Status != OrderStatus.Completed
+            && order.Status != OrderStatus.Cancelled;
+
+        if (!isSequentialTransition && !isValidRecollectingTransition && !isValidCancellation)
+            return false;
+
+        order.Status = request.Status;
+
+        if (request.Status == OrderStatus.Recollecting)
+            order.RecollectedAt = DateTime.UtcNow;
+
+        if (request.Status == OrderStatus.Delivering)
+            order.DeliveredAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
     public async Task<OrderEvidence> AddOrderEvidenceAsync(OrderEvidence evidence, CancellationToken cancellationToken = default)
     {
         await _context.OrderEvidences.AddAsync(evidence, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         return evidence;
+    }
+
+    public async Task<OrderEvidence?> GetOrderEvidenceByIdAsync(Guid evidenceId, CancellationToken cancellationToken = default)
+    {
+        return await _context.OrderEvidences
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == evidenceId, cancellationToken);
     }
 
     public async Task<List<OrderEvidence>> GetOrderEvidencesByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default)
