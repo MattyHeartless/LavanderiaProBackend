@@ -36,8 +36,11 @@ var app = builder.Build();
 
 var imagesRootPath = builder.Configuration["Storage:ImagesRootPath"]
     ?? @"C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\images";
-
-Directory.CreateDirectory(imagesRootPath);
+var absolutePath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, imagesRootPath));
+if (!Directory.Exists(absolutePath))
+{
+    Directory.CreateDirectory(absolutePath);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -49,7 +52,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(imagesRootPath),
+    FileProvider = new PhysicalFileProvider(absolutePath),
     RequestPath = "/images"
 });
 app.UseAuthorization();

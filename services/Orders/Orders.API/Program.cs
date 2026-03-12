@@ -34,9 +34,11 @@ var app = builder.Build();
 
 var imagesRootPath = builder.Configuration["Storage:ImagesRootPath"]
     ?? @"C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Orders\images";
-
-Directory.CreateDirectory(imagesRootPath);
-
+var absolutePath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, imagesRootPath));
+if (!Directory.Exists(absolutePath))
+{
+    Directory.CreateDirectory(absolutePath);
+}
 app.UseCors("AllowAngular");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -48,7 +50,7 @@ app.MapControllers();
 app.UseHttpsRedirection();
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(imagesRootPath),
+    FileProvider = new PhysicalFileProvider(absolutePath),
     RequestPath = "/images"
 });
 app.UseAuthentication(); 
