@@ -17,5 +17,12 @@ namespace Catalogs.Infrastructure.Services
         Task<Courier> AddCourier(Courier courier);
         Task<Courier> UpdateCourier(Courier courier);
         Task<bool> DeleteCourier(Guid id);
+
+        Task<Coupon?> GetCouponById(Guid id);
+        Task<Coupon?> GetCouponByCode(string code);
+        Task<IEnumerable<Coupon>> GetAllCoupons();
+        Task<Coupon> AddCoupon(Coupon coupon);
+        Task<Coupon> UpdateCoupon(Coupon coupon);
+        Task<bool> DeleteCoupon(Guid id);
     }
 }

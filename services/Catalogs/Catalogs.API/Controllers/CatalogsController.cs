@@ -148,4 +148,112 @@ public class CatalogsController : ControllerBase
         var result = await _catalogsService.DeleteCourierAsync(id);
         return Ok(new { message = "Courier deleted successfully", success = result });
     }
+
+    // Coupons
+    [HttpGet("coupons")]
+    public async Task<IActionResult> GetCoupons()
+    {
+        var coupons = await _catalogsService.GetAllCouponsAsync();
+        return Ok(new { coupons });
+    }
+
+    [HttpGet("coupons/{id}")]
+    public async Task<IActionResult> GetCoupon(Guid id)
+    {
+        var coupon = await _catalogsService.GetCouponByIdAsync(id);
+        if (coupon == null)
+            return NotFound(new { message = "Coupon not found" });
+
+        return Ok(new { coupon });
+    }
+
+    [HttpPost("coupons")]
+    public async Task<IActionResult> AddCoupon([FromBody] CreateCouponRequest request)
+    {
+        var validationError = CouponRules.ValidateRequest(
+            request.Code,
+            request.Name,
+            request.BenefitType,
+            request.BenefitValue,
+            request.EventType,
+            request.ExpiresAt,
+            request.UsageLimit,
+            DateTime.UtcNow);
+
+        if (validationError != null)
+            return BadRequest(new { message = validationError });
+
+        var existingCoupon = await _catalogsService.GetCouponByCodeAsync(request.Code.Trim());
+        if (existingCoupon != null)
+            return BadRequest(new { message = "A coupon with that code already exists" });
+
+        var now = DateTime.UtcNow;
+        var coupon = new Coupon
+        {
+            Code = request.Code.Trim(),
+            Name = request.Name.Trim(),
+            Description = request.Description?.Trim(),
+            BenefitType = request.BenefitType.Trim(),
+            BenefitValue = request.BenefitValue,
+            EventType = request.EventType.Trim(),
+            IsActive = request.IsActive,
+            ExpiresAt = request.ExpiresAt,
+            UsageLimit = request.UsageLimit,
+            CreatedAt = now,
+            UpdatedAt = now
+        };
+
+        var createdCoupon = await _catalogsService.AddCouponAsync(coupon);
+        return Created(string.Empty, new { message = "Coupon added successfully", data = createdCoupon });
+    }
+
+    [HttpPut("coupons/{id}")]
+    public async Task<IActionResult> UpdateCoupon(Guid id, [FromBody] UpdateCouponRequest request)
+    {
+        var validationError = CouponRules.ValidateRequest(
+            request.Code,
+            request.Name,
+            request.BenefitType,
+            request.BenefitValue,
+            request.EventType,
+            request.ExpiresAt,
+            request.UsageLimit,
+            DateTime.UtcNow);
+
+        if (validationError != null)
+            return BadRequest(new { message = validationError });
+
+        var existingCoupon = await _catalogsService.GetCouponByIdAsync(id);
+        if (existingCoupon == null)
+            return NotFound(new { message = "Coupon not found" });
+
+        var repeatedCode = await _catalogsService.GetCouponByCodeAsync(request.Code.Trim());
+        if (repeatedCode != null && repeatedCode.Id != id)
+            return BadRequest(new { message = "A coupon with that code already exists" });
+
+        existingCoupon.Code = request.Code.Trim();
+        existingCoupon.Name = request.Name.Trim();
+        existingCoupon.Description = request.Description?.Trim();
+        existingCoupon.BenefitType = request.BenefitType.Trim();
+        existingCoupon.BenefitValue = request.BenefitValue;
+        existingCoupon.EventType = request.EventType.Trim();
+        existingCoupon.IsActive = request.IsActive;
+        existingCoupon.ExpiresAt = request.ExpiresAt;
+        existingCoupon.UsageLimit = request.UsageLimit;
+        existingCoupon.UpdatedAt = DateTime.UtcNow;
+
+        var updatedCoupon = await _catalogsService.UpdateCouponAsync(existingCoupon);
+        return Ok(new { message = "Coupon updated successfully", data = updatedCoupon });
+    }
+
+    [HttpDelete("coupons/{id}")]
+    public async Task<IActionResult> DeleteCoupon(Guid id)
+    {
+        var result = await _catalogsService.DeleteCouponAsync(id);
+        if (!result)
+            return NotFound(new { message = "Coupon not found" });
+
+        return Ok(new { message = "Coupon deleted successfully", success = true });
+    }
+
 }

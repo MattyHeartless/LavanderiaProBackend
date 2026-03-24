@@ -145,3 +145,4 @@ C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\servi
 C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.API\obj\Debug\net8.0\Catalogs.API.pdb
 C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.API\obj\Debug\net8.0\Catalogs.API.genruntimeconfig.cache
 C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.API\obj\Debug\net8.0\ref\Catalogs.API.dll
+C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\Catalogs.API\bin\Debug\net8.0\Catalogs.API.staticwebassets.runtime.json

@@ -68,4 +68,35 @@ public class CatalogsService
     {
         return await _catalogsRepository.DeleteCourier(id);
     }
+
+    // Coupon methods
+    public async Task<Coupon?> GetCouponByIdAsync(Guid id)
+    {
+        return await _catalogsRepository.GetCouponById(id);
+    }
+
+    public async Task<Coupon?> GetCouponByCodeAsync(string code)
+    {
+        return await _catalogsRepository.GetCouponByCode(code);
+    }
+
+    public async Task<IEnumerable<Coupon>> GetAllCouponsAsync()
+    {
+        return await _catalogsRepository.GetAllCoupons();
+    }
+
+    public async Task<Coupon> AddCouponAsync(Coupon coupon)
+    {
+        return await _catalogsRepository.AddCoupon(coupon);
+    }
+
+    public async Task<Coupon> UpdateCouponAsync(Coupon coupon)
+    {
+        return await _catalogsRepository.UpdateCoupon(coupon);
+    }
+
+    public async Task<bool> DeleteCouponAsync(Guid id)
+    {
+        return await _catalogsRepository.DeleteCoupon(id);
+    }
 }

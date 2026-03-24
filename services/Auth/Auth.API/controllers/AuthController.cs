@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 using Auth.Application.Interfaces;
 using Auth.Application.DTOs;
@@ -42,6 +43,21 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         try
         {
             response = await _authService.RegisterCourierAsync(request);
+            return Ok(response);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("registrousuariopromo")]
+    public async Task<IActionResult> RegistroUsuarioPromo([FromBody] RegistroUsuarioPromoRequest request)
+    {
+        RegisterResponse response;
+        try
+        {
+            response = await _authService.RegistroUsuarioPromoAsync(request);
             return Ok(response);
         }
         catch (InvalidOperationException ex)
@@ -135,6 +151,36 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         try
         {
             response = await _authService.UpdateUserAsync(userId, request);
+            return Ok(response);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("validate-coupon")]
+    public async Task<IActionResult> ValidateCoupon([FromBody] ValidateUserCouponRequest request)
+    {
+        var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var response = await _authService.ValidateUserCouponAsync(request, authenticatedUserId);
+        if (!response.IsValid)
+            return BadRequest(response);
+
+        return Ok(response);
+    }
+
+    [HttpPost("redeem-coupon")]
+    public async Task<IActionResult> RedeemCoupon([FromBody] RedeemUserCouponRequest request)
+    {
+        var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        try
+        {
+            var response = await _authService.RedeemUserCouponAsync(request, authenticatedUserId);
             return Ok(response);
         }
         catch (KeyNotFoundException ex)

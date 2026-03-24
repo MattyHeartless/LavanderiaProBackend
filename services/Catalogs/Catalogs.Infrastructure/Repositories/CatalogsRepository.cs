@@ -79,4 +79,38 @@ public class CatalogsRepository : ICatalogsRepository
         await _context.SaveChangesAsync();
         return true;
     }
+
+    // Coupon methods
+    public async Task<Coupon?> GetCouponById(Guid id)
+        => await _context.Coupons.FirstOrDefaultAsync(x => x.Id == id);
+
+    public async Task<Coupon?> GetCouponByCode(string code)
+        => await _context.Coupons.FirstOrDefaultAsync(x => x.Code == code);
+
+    public async Task<IEnumerable<Coupon>> GetAllCoupons()
+        => await _context.Coupons.OrderByDescending(x => x.CreatedAt).ToListAsync();
+
+    public async Task<Coupon> AddCoupon(Coupon coupon)
+    {
+        _context.Coupons.Add(coupon);
+        await _context.SaveChangesAsync();
+        return coupon;
+    }
+
+    public async Task<Coupon> UpdateCoupon(Coupon coupon)
+    {
+        _context.Coupons.Update(coupon);
+        await _context.SaveChangesAsync();
+        return coupon;
+    }
+
+    public async Task<bool> DeleteCoupon(Guid id)
+    {
+        var coupon = await _context.Coupons.FirstOrDefaultAsync(x => x.Id == id);
+        if (coupon == null) return false;
+
+        _context.Coupons.Remove(coupon);
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }

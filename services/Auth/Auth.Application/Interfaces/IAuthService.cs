@@ -6,6 +6,7 @@ namespace Auth.Application.Interfaces;
 public interface IAuthService
 {
     Task<RegisterResponse> RegisterAsync(RegisterRequest request);
+    Task<RegisterResponse> RegistroUsuarioPromoAsync(RegistroUsuarioPromoRequest request);
     Task<RegisterResponse> RegisterCourierAsync(RegisterRequest request);
     Task<bool> CourierAccountExistsAsync(string email);
     Task<LoginResponse> LoginAsync(LoginRequest request);
@@ -14,6 +15,8 @@ public interface IAuthService
     Task<List<UserSummaryResponse>> GetAllUsers();
     Task ChangePasswordAsync(ChangePasswordRequest request);
     Task<UpdateUserResponse> UpdateUserAsync(string userId, UpdateUserRequest request);
+    Task<ValidateUserCouponResponse> ValidateUserCouponAsync(ValidateUserCouponRequest request, string? authenticatedUserId);
+    Task<UserCouponSummaryResponse> RedeemUserCouponAsync(RedeemUserCouponRequest request, string? authenticatedUserId);
 
    
     
