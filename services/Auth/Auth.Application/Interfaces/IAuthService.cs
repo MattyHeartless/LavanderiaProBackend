@@ -13,6 +13,7 @@ public interface IAuthService
     Task<LoginResponse> LoginCourierAsync(LoginRequest request);
     Task<LoginResponse> LoginAdminAsync(LoginRequest request);
     Task<List<UserSummaryResponse>> GetAllUsers();
+    Task<List<UserCouponSummaryResponse>> GetUserCouponsAsync(string userId);
     Task ChangePasswordAsync(ChangePasswordRequest request);
     Task<UpdateUserResponse> UpdateUserAsync(string userId, UpdateUserRequest request);
     Task<ValidateUserCouponResponse> ValidateUserCouponAsync(ValidateUserCouponRequest request, string? authenticatedUserId);

@@ -125,6 +125,20 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         return Ok(users);
     }
 
+    [HttpGet("users/{userId}/coupons")]
+    public async Task<IActionResult> GetUserCoupons(string userId)
+    {
+        try
+        {
+            var coupons = await _authService.GetUserCouponsAsync(userId);
+            return Ok(coupons);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
 
      [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)

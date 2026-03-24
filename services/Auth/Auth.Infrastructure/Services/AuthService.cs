@@ -284,6 +284,19 @@ if (!roles.Contains("Admin"))
         return nonAdminUsers;
     }
 
+    public async Task<List<UserCouponSummaryResponse>> GetUserCouponsAsync(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new InvalidOperationException("User id is required");
+
+        return await _dbContext.UserCoupons
+            .AsNoTracking()
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.CreatedAt)
+            .Select(x => MapCouponSummary(x))
+            .ToListAsync();
+    }
+
     public async Task ChangePasswordAsync(ChangePasswordRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
