@@ -12,6 +12,8 @@ namespace Orders.API.Controllers;
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
 {
+    private const int DefaultDeliveryModeId = 4;
+
     private readonly OrderService _orderService;
     private readonly IFileStorageService _fileStorageService;
 
@@ -77,11 +79,21 @@ public class OrdersController : ControllerBase
         return Ok(new { message = "Courier KPIs retrieved successfully", data = kpis });
     }
 
+    [HttpGet("delivery-modes")]
+    public async Task<IActionResult> GetDeliveryModes(CancellationToken cancellationToken = default)
+    {
+        var modes = await _orderService.GetActiveDeliveryModesAsync(cancellationToken);
+        return Ok(new { message = "Delivery modes retrieved successfully", data = modes });
+    }
+
     [HttpPost]
     public async Task<IActionResult> Add(
         [FromBody] CreateOrderRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (request.OrderDetails == null || !request.OrderDetails.Any())
+            return BadRequest(new { message = "At least one order detail is required" });
+
         // Validate each order detail
         foreach (var detail in request.OrderDetails)
         {
@@ -89,6 +101,27 @@ public class OrdersController : ControllerBase
             if (validationError != null)
                 return BadRequest(new { message = validationError });
         }
+
+        var selectedDeliveryModeId = request.Order.DeliveryModeId ?? DefaultDeliveryModeId;
+        var selectedDeliveryMode = await _orderService.GetDeliveryModeByIdAsync(selectedDeliveryModeId, cancellationToken);
+        if (selectedDeliveryMode == null || !selectedDeliveryMode.IsActive)
+            return BadRequest(new { message = "Selected delivery mode is invalid or inactive" });
+
+        request.Order.DeliveryModeId = selectedDeliveryMode.Id;
+        request.Order.DeliveryModeCode = selectedDeliveryMode.Code;
+        request.Order.DeliveryModeName = selectedDeliveryMode.Name;
+        request.Order.DeliveryEtaHours = selectedDeliveryMode.EtaHours;
+        request.Order.DeliveryModeSurcharge = selectedDeliveryMode.SurchargeAmount;
+
+        var detailsSubtotal = request.OrderDetails.Sum(x => x.SubTotal);
+        request.Order.DeliveryFee = selectedDeliveryMode.SurchargeAmount;
+        request.Order.TotalAmount = detailsSubtotal + request.Order.DeliveryFee;
+
+        if (request.Order.Status == 0)
+            request.Order.Status = OrderStatus.Created;
+
+        if (request.Order.CreatedAt == default)
+            request.Order.CreatedAt = DateTime.UtcNow;
 
         Guid result = await _orderService.AddAsync(request.Order, request.OrderDetails, cancellationToken);
         return Ok(new { message = "Order created successfully", orderId = result });

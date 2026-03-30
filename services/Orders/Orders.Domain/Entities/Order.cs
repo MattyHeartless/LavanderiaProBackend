@@ -20,6 +20,11 @@ public class Order
 
     public decimal TotalAmount { get; set; }
     public decimal DeliveryFee { get; set; }
+    public int? DeliveryModeId { get; set; }
+    public string? DeliveryModeCode { get; set; }
+    public string? DeliveryModeName { get; set; }
+    public int? DeliveryEtaHours { get; set; }
+    public decimal? DeliveryModeSurcharge { get; set; }
     public string CourierName { get; set; }
     public string? CourierPhone { get; set; }
     public Guid? CourierGuid { get; set;}

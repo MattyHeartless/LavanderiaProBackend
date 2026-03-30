@@ -152,6 +152,22 @@ public class OrderRepository : IOrderRepository
         };
     }
 
+    public async Task<List<DeliveryMode>> GetActiveDeliveryModesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.DeliveryModes
+            .Where(x => x.IsActive)
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Id)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<DeliveryMode?> GetDeliveryModeByIdAsync(int deliveryModeId, CancellationToken cancellationToken = default)
+    {
+        return await _context.DeliveryModes
+            .FirstOrDefaultAsync(x => x.Id == deliveryModeId, cancellationToken);
+    }
+
     public async Task<Guid> AddAsync(
         Order order,
         IEnumerable<OrderDetail> orderDetails,

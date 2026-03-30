@@ -13,6 +13,7 @@ public class OrdersDbContext : DbContext
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
     public DbSet<OrderEvidence> OrderEvidences => Set<OrderEvidence>();
+    public DbSet<DeliveryMode> DeliveryModes => Set<DeliveryMode>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
@@ -50,6 +51,15 @@ public class OrdersDbContext : DbContext
         builder.Property(o => o.DeliveryFee)
             .HasPrecision(18, 2)
             .IsRequired();
+
+        builder.Property(o => o.DeliveryModeCode)
+            .HasMaxLength(40);
+
+        builder.Property(o => o.DeliveryModeName)
+            .HasMaxLength(100);
+
+        builder.Property(o => o.DeliveryModeSurcharge)
+            .HasPrecision(18, 2);
 
         builder.Property(o => o.CreatedAt)
             .IsRequired();
@@ -89,6 +99,51 @@ public class OrdersDbContext : DbContext
             sa.Property(p => p.Longitude)
                 .HasPrecision(9, 6);
         });
+
+        builder.HasOne<DeliveryMode>()
+            .WithMany()
+            .HasForeignKey(o => o.DeliveryModeId)
+            .OnDelete(DeleteBehavior.NoAction);
+    });
+
+    modelBuilder.Entity<DeliveryMode>(builder =>
+    {
+        builder.ToTable("DeliveryModes");
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(x => x.Code)
+            .IsRequired()
+            .HasMaxLength(40);
+
+        builder.HasIndex(x => x.Code)
+            .IsUnique();
+
+        builder.Property(x => x.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(x => x.EtaHours)
+            .IsRequired();
+
+        builder.Property(x => x.SurchargeAmount)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
+        builder.Property(x => x.IsActive)
+            .IsRequired();
+
+        builder.Property(x => x.SortOrder)
+            .IsRequired();
+
+        builder.HasData(
+            new DeliveryMode { Id = 1, Code = "EXPRESS_3H", Name = "Tres horas (Express)", EtaHours = 3, SurchargeAmount = 80m, IsActive = true, SortOrder = 1 },
+            new DeliveryMode { Id = 2, Code = "SIX_HOURS", Name = "Seis horas", EtaHours = 6, SurchargeAmount = 50m, IsActive = true, SortOrder = 2 },
+            new DeliveryMode { Id = 3, Code = "TWELVE_HOURS", Name = "Doce horas", EtaHours = 12, SurchargeAmount = 25m, IsActive = true, SortOrder = 3 },
+            new DeliveryMode { Id = 4, Code = "TWENTY_FOUR_HOURS", Name = "24 horas", EtaHours = 24, SurchargeAmount = 0m, IsActive = true, SortOrder = 4 }
+        );
     });
 
     modelBuilder.Entity<OrderEvidence>(builder =>

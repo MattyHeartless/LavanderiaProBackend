@@ -51,6 +51,16 @@ public class OrderService : IOrderRepository
         return await _orderRepository.GetCourierWorkedOrdersKpisAsync(courierGuid, cancellationToken);
     }
 
+    public async Task<List<DeliveryMode>> GetActiveDeliveryModesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.GetActiveDeliveryModesAsync(cancellationToken);
+    }
+
+    public async Task<DeliveryMode?> GetDeliveryModeByIdAsync(int deliveryModeId, CancellationToken cancellationToken = default)
+    {
+        return await _orderRepository.GetDeliveryModeByIdAsync(deliveryModeId, cancellationToken);
+    }
+
     public async Task<Guid> AddAsync(
         Order order,
         IEnumerable<OrderDetail> orderDetails,
