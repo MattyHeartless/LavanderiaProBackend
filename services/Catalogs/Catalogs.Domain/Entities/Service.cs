@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Catalogs.Domain.Entities
 {
     public class Service
@@ -10,5 +12,8 @@ namespace Catalogs.Domain.Entities
         public Boolean IsActive { get; set; }
         public string Icon { get; set; }
         public string ThemeIcon { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public ICollection<ServicePricingOption>? PricingOptions { get; set; }
     }
 }

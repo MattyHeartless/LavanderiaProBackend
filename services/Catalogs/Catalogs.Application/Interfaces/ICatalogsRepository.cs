@@ -10,6 +10,13 @@ namespace Catalogs.Infrastructure.Services
         Task<Service> UpdateService(Service service);
         Task<bool> DeleteService(Guid id);
 
+        Task<IEnumerable<ServicePricingOption>> GetPricingOptionsByServiceId(Guid serviceId);
+        Task<ServicePricingOption?> GetPricingOptionById(Guid optionId);
+        Task<ServicePricingOption> AddPricingOption(ServicePricingOption option);
+        Task<ServicePricingOption> UpdatePricingOption(ServicePricingOption option);
+        Task<bool> DeletePricingOption(Guid optionId);
+        Task<int> GetActivePricingOptionsCountByServiceId(Guid serviceId);
+
 
         Task<Courier> GetCourierById(Guid id);
         Task<Courier> GetCourierByAuthUserId(string authUserId);

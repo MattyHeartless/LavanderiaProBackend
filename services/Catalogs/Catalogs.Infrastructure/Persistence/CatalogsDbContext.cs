@@ -14,6 +14,7 @@ namespace Catalogs.Infrastructure.Persistence
         public DbSet<Service> Services { get; set; }
         public DbSet<Courier> Couriers { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<ServicePricingOption> ServicePricingOptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +33,36 @@ namespace Catalogs.Infrastructure.Persistence
 
                     builder.Property(x => x.Price)
                         .HasPrecision(18, 2);
+                });
+
+                modelBuilder.Entity<ServicePricingOption>(builder =>
+                {
+                    builder.HasKey(x => x.Id);
+
+                    builder.Property(x => x.Id)
+                        .ValueGeneratedOnAdd();
+
+                    builder.Property(x => x.OptionName)
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    builder.Property(x => x.Price)
+                        .HasPrecision(18, 2);
+
+                    builder.Property(x => x.UoM)
+                        .IsRequired()
+                        .HasMaxLength(10);
+
+                    builder.Property(x => x.CreatedAt).IsRequired();
+                    builder.Property(x => x.UpdatedAt).IsRequired();
+
+                    builder.HasIndex(x => new { x.ServiceId, x.OptionName })
+                        .IsUnique();
+
+                    builder.HasOne(x => x.Service)
+                        .WithMany(s => s.PricingOptions)
+                        .HasForeignKey(x => x.ServiceId)
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
                 modelBuilder.Entity<Courier>(builder =>

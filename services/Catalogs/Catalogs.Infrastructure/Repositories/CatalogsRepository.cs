@@ -17,10 +17,14 @@ public class CatalogsRepository : ICatalogsRepository
 
     // Service methods
     public async Task<Service> GetServiceById(Guid id)
-        => await _context.Services.FirstOrDefaultAsync(x => x.Id == id);
+        => await _context.Services
+            .Include(s => s.PricingOptions)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
     public async Task<IEnumerable<Service>> GetAllServices()
-        => await _context.Services.ToListAsync();
+        => await _context.Services
+            .Include(s => s.PricingOptions)
+            .ToListAsync();
 
     public async Task<Service> AddService(Service service)
     {
@@ -31,9 +35,18 @@ public class CatalogsRepository : ICatalogsRepository
 
     public async Task<Service> UpdateService(Service service)
     {
-        _context.Services.Update(service);
+        var existing = await _context.Services.FirstOrDefaultAsync(x => x.Id == service.Id);
+        if (existing == null) return service;
+
+        existing.Name        = service.Name;
+        existing.Description = service.Description;
+        existing.IsActive    = service.IsActive;
+        existing.Icon        = service.Icon;
+        existing.ThemeIcon   = service.ThemeIcon;
+        // Price and UoM are read-only; managed via PricingOptions
+
         await _context.SaveChangesAsync();
-        return service;
+        return existing;
     }
 
     public async Task<bool> DeleteService(Guid id)
@@ -45,6 +58,44 @@ public class CatalogsRepository : ICatalogsRepository
         await _context.SaveChangesAsync();
         return true;
     }
+
+    // PricingOption methods
+    public async Task<IEnumerable<ServicePricingOption>> GetPricingOptionsByServiceId(Guid serviceId)
+        => await _context.ServicePricingOptions
+            .Where(x => x.ServiceId == serviceId)
+            .OrderBy(x => x.OptionName)
+            .ToListAsync();
+
+    public async Task<ServicePricingOption?> GetPricingOptionById(Guid optionId)
+        => await _context.ServicePricingOptions.FirstOrDefaultAsync(x => x.Id == optionId);
+
+    public async Task<ServicePricingOption> AddPricingOption(ServicePricingOption option)
+    {
+        _context.ServicePricingOptions.Add(option);
+        await _context.SaveChangesAsync();
+        return option;
+    }
+
+    public async Task<ServicePricingOption> UpdatePricingOption(ServicePricingOption option)
+    {
+        _context.ServicePricingOptions.Update(option);
+        await _context.SaveChangesAsync();
+        return option;
+    }
+
+    public async Task<bool> DeletePricingOption(Guid optionId)
+    {
+        var option = await _context.ServicePricingOptions.FirstOrDefaultAsync(x => x.Id == optionId);
+        if (option == null) return false;
+
+        _context.ServicePricingOptions.Remove(option);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<int> GetActivePricingOptionsCountByServiceId(Guid serviceId)
+        => await _context.ServicePricingOptions
+            .CountAsync(x => x.ServiceId == serviceId && x.IsActive);
 
     // Courier methods
     public async Task<Courier> GetCourierById(Guid id)

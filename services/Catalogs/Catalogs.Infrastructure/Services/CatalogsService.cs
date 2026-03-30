@@ -99,4 +99,23 @@ public class CatalogsService
     {
         return await _catalogsRepository.DeleteCoupon(id);
     }
+
+    // PricingOption methods
+    public async Task<IEnumerable<ServicePricingOption>> GetPricingOptionsByServiceIdAsync(Guid serviceId)
+        => await _catalogsRepository.GetPricingOptionsByServiceId(serviceId);
+
+    public async Task<ServicePricingOption?> GetPricingOptionByIdAsync(Guid optionId)
+        => await _catalogsRepository.GetPricingOptionById(optionId);
+
+    public async Task<ServicePricingOption> AddPricingOptionAsync(ServicePricingOption option)
+        => await _catalogsRepository.AddPricingOption(option);
+
+    public async Task<ServicePricingOption> UpdatePricingOptionAsync(ServicePricingOption option)
+        => await _catalogsRepository.UpdatePricingOption(option);
+
+    public async Task<bool> DeletePricingOptionAsync(Guid optionId)
+        => await _catalogsRepository.DeletePricingOption(optionId);
+
+    public async Task<int> GetActivePricingOptionsCountByServiceIdAsync(Guid serviceId)
+        => await _catalogsRepository.GetActivePricingOptionsCountByServiceId(serviceId);
 }

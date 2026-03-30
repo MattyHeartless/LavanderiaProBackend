@@ -55,6 +55,108 @@ public class CatalogsController : ControllerBase
         return Ok(new { message = "Service deleted successfully", success = result });
     }
 
+    // Pricing Options
+    [HttpGet("services/{serviceId}/pricing-options")]
+    public async Task<IActionResult> GetPricingOptions(Guid serviceId)
+    {
+        var options = await _catalogsService.GetPricingOptionsByServiceIdAsync(serviceId);
+        return Ok(new { pricingOptions = options });
+    }
+
+    [HttpGet("pricing-options/{optionId}/is-active")]
+    public async Task<IActionResult> GetPricingOptionIsActive(Guid optionId)
+    {
+        var option = await _catalogsService.GetPricingOptionByIdAsync(optionId);
+        if (option == null)
+            return NotFound(new { message = "Pricing option not found" });
+
+        return Ok(new { isActive = option.IsActive });
+    }
+
+    [HttpPost("services/{serviceId}/pricing-options")]
+    public async Task<IActionResult> AddPricingOption(Guid serviceId, [FromBody] CreatePricingOptionRequest request)
+    {
+        var service = await _catalogsService.GetServiceByIdAsync(serviceId);
+        if (service == null)
+            return NotFound(new { message = "Service not found" });
+
+        var validationError = ServicePricingOptionRules.Validate(request.OptionName, request.Price, request.UoM);
+        if (validationError != null)
+            return BadRequest(new { message = validationError });
+
+        var existing = await _catalogsService.GetPricingOptionsByServiceIdAsync(serviceId);
+        if (existing.Any(o => o.OptionName == request.OptionName))
+            return BadRequest(new { message = "A pricing option with that name already exists for this service" });
+
+        var now = DateTime.UtcNow;
+        var option = new ServicePricingOption
+        {
+            ServiceId  = serviceId,
+            OptionName = request.OptionName,
+            Price      = request.Price,
+            UoM        = request.UoM,
+            IsActive   = request.IsActive,
+            CreatedAt  = now,
+            UpdatedAt  = now,
+        };
+
+        var created = await _catalogsService.AddPricingOptionAsync(option);
+        return Created(string.Empty, new { message = "Pricing option added successfully", data = created });
+    }
+
+    [HttpPut("services/{serviceId}/pricing-options/{optionId}")]
+    public async Task<IActionResult> UpdatePricingOption(Guid serviceId, Guid optionId, [FromBody] UpdatePricingOptionRequest request)
+    {
+        var validationError = ServicePricingOptionRules.Validate(request.OptionName, request.Price, request.UoM);
+        if (validationError != null)
+            return BadRequest(new { message = validationError });
+
+        var existing = await _catalogsService.GetPricingOptionByIdAsync(optionId);
+        if (existing == null || existing.ServiceId != serviceId)
+            return NotFound(new { message = "Pricing option not found" });
+
+        if (!request.IsActive && existing.IsActive)
+        {
+            var activeCount = await _catalogsService.GetActivePricingOptionsCountByServiceIdAsync(serviceId);
+            if (activeCount <= 1)
+                return BadRequest(new { message = "Service must have at least one active pricing option" });
+        }
+
+        if (existing.OptionName != request.OptionName)
+        {
+            var siblings = await _catalogsService.GetPricingOptionsByServiceIdAsync(serviceId);
+            if (siblings.Any(o => o.Id != optionId && o.OptionName == request.OptionName))
+                return BadRequest(new { message = "A pricing option with that name already exists for this service" });
+        }
+
+        existing.OptionName = request.OptionName;
+        existing.Price      = request.Price;
+        existing.UoM        = request.UoM;
+        existing.IsActive   = request.IsActive;
+        existing.UpdatedAt  = DateTime.UtcNow;
+
+        var updated = await _catalogsService.UpdatePricingOptionAsync(existing);
+        return Ok(new { message = "Pricing option updated successfully", data = updated });
+    }
+
+    [HttpDelete("services/{serviceId}/pricing-options/{optionId}")]
+    public async Task<IActionResult> DeletePricingOption(Guid serviceId, Guid optionId)
+    {
+        var existing = await _catalogsService.GetPricingOptionByIdAsync(optionId);
+        if (existing == null || existing.ServiceId != serviceId)
+            return NotFound(new { message = "Pricing option not found" });
+
+        if (existing.IsActive)
+        {
+            var activeCount = await _catalogsService.GetActivePricingOptionsCountByServiceIdAsync(serviceId);
+            if (activeCount <= 1)
+                return BadRequest(new { message = "Cannot delete the only active pricing option of a service" });
+        }
+
+        var result = await _catalogsService.DeletePricingOptionAsync(optionId);
+        return Ok(new { message = "Pricing option deleted successfully", success = result });
+    }
+
     // Couriers
     [HttpGet("couriers")]
     public async Task<IActionResult> GetCouriers()

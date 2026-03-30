@@ -82,6 +82,14 @@ public class OrdersController : ControllerBase
         [FromBody] CreateOrderRequest request,
         CancellationToken cancellationToken = default)
     {
+        // Validate each order detail
+        foreach (var detail in request.OrderDetails)
+        {
+            var validationError = OrderDetailRules.Validate(detail);
+            if (validationError != null)
+                return BadRequest(new { message = validationError });
+        }
+
         Guid result = await _orderService.AddAsync(request.Order, request.OrderDetails, cancellationToken);
         return Ok(new { message = "Order created successfully", orderId = result });
     }

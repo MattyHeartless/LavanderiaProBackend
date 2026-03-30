@@ -177,6 +177,62 @@ namespace Catalogs.Infrastructure.Migrations
 
                     b.ToTable("Services");
                 });
+
+            modelBuilder.Entity("Catalogs.Domain.Entities.ServicePricingOption", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OptionName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UoM")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceId", "OptionName")
+                        .IsUnique();
+
+                    b.ToTable("ServicePricingOptions");
+                });
+
+            modelBuilder.Entity("Catalogs.Domain.Entities.ServicePricingOption", b =>
+                {
+                    b.HasOne("Catalogs.Domain.Entities.Service", "Service")
+                        .WithMany("PricingOptions")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("Catalogs.Domain.Entities.Service", b =>
+                {
+                    b.Navigation("PricingOptions");
+                });
 #pragma warning restore 612, 618
         }
     }

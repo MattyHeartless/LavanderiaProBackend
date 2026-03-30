@@ -102,8 +102,17 @@ namespace Orders.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int?>("BlackClothQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ColoredClothQuantity")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PricingOptionName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -118,6 +127,9 @@ namespace Orders.Infrastructure.Migrations
 
                     b.Property<decimal>("ServicePrice")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("ServicePricingOptionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UoM")
                         .IsRequired()
