@@ -41,11 +41,144 @@ public class CatalogsController : ControllerBase
     }
 
     [HttpPut("services/{id}")]
-    public async Task<IActionResult> UpdateService(Guid id, [FromBody] Service service)
+    public async Task<IActionResult> UpdateService(Guid id, [FromBody] UpdateServiceRequest request)
     {
-        service.Id = id;
+        var currentService = await _catalogsService.GetServiceByIdAsync(id);
+        if (currentService == null)
+            return NotFound(new { message = "Service not found" });
+
+        var service = new Service
+        {
+            Id          = id,
+            Name        = request.Name,
+            Description = request.Description,
+            Price       = request.Price,
+            UoM         = request.UoM,
+            IsActive    = request.IsActive,
+            Icon        = request.Icon,
+            ThemeIcon   = request.ThemeIcon,
+        };
+
         var updatedService = await _catalogsService.UpdateServiceAsync(service);
-        return Ok(new { message = "Service updated successfully", data = updatedService });
+
+        if (request.PricingOptions != null)
+        {
+            var duplicateNames = request.PricingOptions
+                .GroupBy(o => o.OptionName?.Trim(), StringComparer.OrdinalIgnoreCase)
+                .Where(g => !string.IsNullOrWhiteSpace(g.Key) && g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
+
+            if (duplicateNames.Count > 0)
+                return BadRequest(new { message = $"Duplicated pricing option names are not allowed: {string.Join(", ", duplicateNames)}" });
+
+            var parsedIncomingIds = new List<Guid>();
+            foreach (var optionRequest in request.PricingOptions)
+            {
+                if (string.IsNullOrWhiteSpace(optionRequest.Id))
+                    continue;
+
+                if (!Guid.TryParse(optionRequest.Id, out var parsedId))
+                    return BadRequest(new { message = $"Pricing option id '{optionRequest.Id}' is not a valid GUID." });
+
+                if (parsedId != Guid.Empty)
+                    parsedIncomingIds.Add(parsedId);
+            }
+
+            var duplicateIds = parsedIncomingIds
+                .GroupBy(x => x)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
+
+            if (duplicateIds.Count > 0)
+                return BadRequest(new { message = "Duplicated pricing option ids are not allowed." });
+
+            if (request.PricingOptions.Count == 0 || !request.PricingOptions.Any(o => o.IsActive))
+                return BadRequest(new { message = "Service must have at least one active pricing option." });
+
+            foreach (var optionRequest in request.PricingOptions)
+            {
+                if (!string.IsNullOrWhiteSpace(optionRequest.ServiceId))
+                {
+                    if (!Guid.TryParse(optionRequest.ServiceId, out var parsedServiceId))
+                        return BadRequest(new { message = $"Pricing option serviceId '{optionRequest.ServiceId}' is not a valid GUID." });
+
+                    if (parsedServiceId != Guid.Empty && parsedServiceId != id)
+                        return BadRequest(new { message = "All pricing options must belong to the service being updated." });
+                }
+
+                var validationError = ServicePricingOptionRules.Validate(optionRequest.OptionName, optionRequest.Price, optionRequest.UoM);
+                if (validationError != null)
+                    return BadRequest(new { message = validationError });
+            }
+
+            var existingOptions = (await _catalogsService.GetPricingOptionsByServiceIdAsync(id)).ToList();
+            var existingById = existingOptions.ToDictionary(x => x.Id, x => x);
+            var incomingIds = new HashSet<Guid>();
+            var now = DateTime.UtcNow;
+
+            foreach (var optionRequest in request.PricingOptions)
+            {
+                var incomingId = Guid.Empty;
+                var hasIncomingId = !string.IsNullOrWhiteSpace(optionRequest.Id)
+                    && Guid.TryParse(optionRequest.Id, out incomingId)
+                    && incomingId != Guid.Empty;
+
+                if (hasIncomingId)
+                {
+                    var globalOption = await _catalogsService.GetPricingOptionByIdAsync(incomingId);
+                    if (globalOption != null && globalOption.ServiceId != id)
+                        return BadRequest(new { message = $"Pricing option '{incomingId}' belongs to another service." });
+                }
+
+                if (hasIncomingId && existingById.TryGetValue(incomingId, out var existingOption))
+                {
+                    existingOption.OptionName = optionRequest.OptionName;
+                    existingOption.Price = optionRequest.Price;
+                    existingOption.UoM = optionRequest.UoM;
+                    existingOption.IsActive = optionRequest.IsActive;
+                    existingOption.UpdatedAt = now;
+
+                    await _catalogsService.UpdatePricingOptionAsync(existingOption);
+                    incomingIds.Add(existingOption.Id);
+                    continue;
+                }
+
+                var existingByName = existingOptions.FirstOrDefault(x =>
+                    string.Equals(x.OptionName, optionRequest.OptionName, StringComparison.OrdinalIgnoreCase));
+
+                if (existingByName != null)
+                    return BadRequest(new { message = $"Pricing option '{optionRequest.OptionName}' already exists. Send its id to update it." });
+
+                var newOption = new ServicePricingOption
+                {
+                    Id = hasIncomingId ? incomingId : Guid.NewGuid(),
+                    ServiceId = id,
+                    OptionName = optionRequest.OptionName,
+                    Price = optionRequest.Price,
+                    UoM = optionRequest.UoM,
+                    IsActive = optionRequest.IsActive,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                };
+
+                var createdOption = await _catalogsService.AddPricingOptionAsync(newOption);
+                incomingIds.Add(createdOption.Id);
+            }
+
+            var optionsToDelete = existingOptions
+                .Where(existing => !incomingIds.Contains(existing.Id))
+                .ToList();
+
+            foreach (var optionToDelete in optionsToDelete)
+            {
+                await _catalogsService.DeletePricingOptionAsync(optionToDelete.Id);
+            }
+        }
+
+        var refreshedService = await _catalogsService.GetServiceByIdAsync(id);
+        return Ok(new { message = "Service updated successfully", data = refreshedService ?? updatedService });
     }
 
     [HttpDelete("services/{id}")]

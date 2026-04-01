@@ -114,7 +114,6 @@ public class OrdersController : ControllerBase
         request.Order.DeliveryModeSurcharge = selectedDeliveryMode.SurchargeAmount;
 
         var detailsSubtotal = request.OrderDetails.Sum(x => x.SubTotal);
-        request.Order.DeliveryFee = selectedDeliveryMode.SurchargeAmount;
         request.Order.TotalAmount = detailsSubtotal + request.Order.DeliveryFee;
 
         if (request.Order.Status == 0)
