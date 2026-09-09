@@ -173,8 +173,23 @@ public class OrderRepository : IOrderRepository
         IEnumerable<OrderDetail> orderDetails,
         CancellationToken cancellationToken = default)
     {
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        if (order.Id == Guid.Empty)
+            order.Id = Guid.NewGuid();
         await _context.Orders.AddAsync(order, cancellationToken);
+        foreach (var detail in orderDetails)
+        {
+            detail.OrderId = order.Id;
+        }
+        await _context.OrderDetails.AddRangeAsync(orderDetails, cancellationToken);
+        await _context.OrderNotificationOutbox.AddAsync(new OrderNotificationOutbox
+        {
+            Id = Guid.NewGuid(),
+            OrderId = order.Id,
+            CreatedAt = DateTime.UtcNow
+        }, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
         return order.Id;
     }
 

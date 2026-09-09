@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Profile\\Profile.Domain\\Profile.Domain.csproj": {}
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Profile/Profile.Domain/Profile.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Profile\\Profile.Domain\\Profile.Domain.csproj": {
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Profile/Profile.Domain/Profile.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Profile\\Profile.Domain\\Profile.Domain.csproj",
+        "projectUniqueName": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Profile/Profile.Domain/Profile.Domain.csproj",
         "projectName": "Profile.Domain",
-        "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Profile\\Profile.Domain\\Profile.Domain.csproj",
-        "packagesPath": "C:\\Users\\Jair\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Profile\\Profile.Domain\\obj\\",
+        "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Profile/Profile.Domain/Profile.Domain.csproj",
+        "packagesPath": "/Users/jaiman/.nuget/packages/",
+        "outputPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Profile/Profile.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jair\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/jaiman/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,8 +37,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -66,7 +58,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -287,6 +287,31 @@ namespace Orders.Infrastructure.Migrations
                     b.ToTable("OrderEvidences", (string)null);
                 });
 
+            modelBuilder.Entity("Orders.Domain.Entities.OrderNotificationOutbox", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessedAt", "CreatedAt");
+
+                    b.ToTable("OrderNotificationOutbox", (string)null);
+                });
+
             modelBuilder.Entity("Orders.Domain.Entities.Order", b =>
                 {
                     b.HasOne("Orders.Domain.Entities.DeliveryMode", null)

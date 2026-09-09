@@ -1,43 +1,36 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.API\\Auth.API.csproj": {}
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.API/Auth.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.API\\Auth.API.csproj": {
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.API/Auth.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.API\\Auth.API.csproj",
+        "projectUniqueName": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.API/Auth.API.csproj",
         "projectName": "Auth.API",
-        "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.API\\Auth.API.csproj",
-        "packagesPath": "C:\\Users\\Jair\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.API\\obj\\",
+        "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.API/Auth.API.csproj",
+        "packagesPath": "/Users/jaiman/.nuget/packages/",
+        "outputPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.API/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jair\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/jaiman/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Application\\Auth.Application.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Application\\Auth.Application.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Application/Auth.Application.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Application/Auth.Application.csproj"
               },
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Infrastructure\\Auth.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Infrastructure\\Auth.Infrastructure.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Infrastructure/Auth.Infrastructure.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Infrastructure/Auth.Infrastructure.csproj"
               }
             }
           }
@@ -51,13 +44,16 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.23, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.23, )"
@@ -92,41 +88,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Application\\Auth.Application.csproj": {
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Application/Auth.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Application\\Auth.Application.csproj",
+        "projectUniqueName": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Application/Auth.Application.csproj",
         "projectName": "Auth.Application",
-        "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Application\\Auth.Application.csproj",
-        "packagesPath": "C:\\Users\\Jair\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Application\\obj\\",
+        "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Application/Auth.Application.csproj",
+        "packagesPath": "/Users/jaiman/.nuget/packages/",
+        "outputPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Application/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jair\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/jaiman/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Domain\\Auth.Domain.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Domain/Auth.Domain.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Domain/Auth.Domain.csproj"
               }
             }
           }
@@ -140,8 +129,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -162,33 +150,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Domain/Auth.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Domain\\Auth.Domain.csproj",
+        "projectUniqueName": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Domain/Auth.Domain.csproj",
         "projectName": "Auth.Domain",
-        "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Domain\\Auth.Domain.csproj",
-        "packagesPath": "C:\\Users\\Jair\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Domain\\obj\\",
+        "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Domain/Auth.Domain.csproj",
+        "packagesPath": "/Users/jaiman/.nuget/packages/",
+        "outputPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jair\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/jaiman/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -206,8 +187,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -228,44 +208,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Infrastructure\\Auth.Infrastructure.csproj": {
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Infrastructure/Auth.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Infrastructure\\Auth.Infrastructure.csproj",
+        "projectUniqueName": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Infrastructure/Auth.Infrastructure.csproj",
         "projectName": "Auth.Infrastructure",
-        "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Infrastructure\\Auth.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Jair\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Infrastructure\\obj\\",
+        "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Infrastructure/Auth.Infrastructure.csproj",
+        "packagesPath": "/Users/jaiman/.nuget/packages/",
+        "outputPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Infrastructure/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jair\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/jaiman/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Application\\Auth.Application.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Application\\Auth.Application.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Application/Auth.Application.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Application/Auth.Application.csproj"
               },
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Auth\\Auth.Domain\\Auth.Domain.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Domain/Auth.Domain.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Auth/Auth.Domain/Auth.Domain.csproj"
               }
             }
           }
@@ -279,8 +252,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -307,6 +279,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             }
           },
           "imports": [
@@ -325,7 +301,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

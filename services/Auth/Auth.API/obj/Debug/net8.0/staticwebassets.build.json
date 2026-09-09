@@ -1,1 +1,11 @@
-{"Version":1,"Hash":"zSHY+kBZqap1Zz/Ses7abqfO72w29xiGs/r3Uc3Qftw=","Source":"Auth.API","BasePath":"/","Mode":"Root","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[],"Assets":[],"Endpoints":[]}
+{
+  "Version": 1,
+  "Hash": "9qlxsiSAFE8kK9DGeqkhaJXnOPkSpCJfaBrYFAZYv1c=",
+  "Source": "Auth.API",
+  "BasePath": "_content/Auth.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

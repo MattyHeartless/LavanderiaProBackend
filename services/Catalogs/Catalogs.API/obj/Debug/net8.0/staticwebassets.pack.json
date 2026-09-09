@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Catalogs/Catalogs.API/wwwroot/images/couriers/profile/8b6d45d0195a4198a49a93567abe8585.jpeg",
+      "PackagePath": "staticwebassets/images/couriers/profile/8b6d45d0195a4198a49a93567abe8585.jpeg"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.Catalogs.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.Catalogs.API.props",
+      "PackagePath": "build\\Catalogs.API.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.Catalogs.API.props",
+      "PackagePath": "buildMultiTargeting\\Catalogs.API.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.Catalogs.API.props",
+      "PackagePath": "buildTransitive\\Catalogs.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

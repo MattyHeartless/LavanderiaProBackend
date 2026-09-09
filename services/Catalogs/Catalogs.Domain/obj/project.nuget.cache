@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "l1+4DD0kc8k=",
+  "dgSpecHash": "eGmUY5ZUauI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Catalogs\\Catalogs.Domain\\Catalogs.Domain.csproj",
+  "projectFilePath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Catalogs/Catalogs.Domain/Catalogs.Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

@@ -78,6 +78,9 @@ namespace Catalogs.Infrastructure.Persistence
 
                     builder.Property(x => x.ProfileImageUrl)
                         .HasMaxLength(500);
+
+                    builder.Property(x => x.IsAvailable)
+                        .HasDefaultValue(false);
                 });
 
                 modelBuilder.Entity<Coupon>(builder =>

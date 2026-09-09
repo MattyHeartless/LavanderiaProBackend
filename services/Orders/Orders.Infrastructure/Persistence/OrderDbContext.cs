@@ -13,6 +13,7 @@ public class OrdersDbContext : DbContext
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
     public DbSet<OrderEvidence> OrderEvidences => Set<OrderEvidence>();
+    public DbSet<OrderNotificationOutbox> OrderNotificationOutbox => Set<OrderNotificationOutbox>();
     public DbSet<DeliveryMode> DeliveryModes => Set<DeliveryMode>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -104,6 +105,14 @@ public class OrdersDbContext : DbContext
             .WithMany()
             .HasForeignKey(o => o.DeliveryModeId)
             .OnDelete(DeleteBehavior.NoAction);
+    });
+
+    modelBuilder.Entity<OrderNotificationOutbox>(builder =>
+    {
+        builder.ToTable("OrderNotificationOutbox");
+        builder.HasKey(x => x.Id);
+        builder.HasIndex(x => new { x.ProcessedAt, x.CreatedAt });
+        builder.Property(x => x.CreatedAt).IsRequired();
     });
 
     modelBuilder.Entity<DeliveryMode>(builder =>

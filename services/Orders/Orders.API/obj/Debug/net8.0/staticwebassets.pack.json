@@ -1,0 +1,69 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/0a9e8b43833448a0ba6b2cc4b854ccf7.png",
+      "PackagePath": "staticwebassets/images/orders/evidences/0a9e8b43833448a0ba6b2cc4b854ccf7.png"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/11d557866f2946789e3e92181e74b792.png",
+      "PackagePath": "staticwebassets/images/orders/evidences/11d557866f2946789e3e92181e74b792.png"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/1fa1ac4fa91d40e9a5ef889c670ebb36.png",
+      "PackagePath": "staticwebassets/images/orders/evidences/1fa1ac4fa91d40e9a5ef889c670ebb36.png"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/2357981aa2c34d3abba3571974596207.jpg",
+      "PackagePath": "staticwebassets/images/orders/evidences/2357981aa2c34d3abba3571974596207.jpg"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/28f103f51f304da7b6749790e26a8608.png",
+      "PackagePath": "staticwebassets/images/orders/evidences/28f103f51f304da7b6749790e26a8608.png"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/2d152e6fb79a4f5d80af875c49496646.JPG",
+      "PackagePath": "staticwebassets/images/orders/evidences/2d152e6fb79a4f5d80af875c49496646.JPG"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/379e5a0f86ca4aa5a2448280b04d767e.png",
+      "PackagePath": "staticwebassets/images/orders/evidences/379e5a0f86ca4aa5a2448280b04d767e.png"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/5ef20e656715463f81c4f7f4550d0eaa.png",
+      "PackagePath": "staticwebassets/images/orders/evidences/5ef20e656715463f81c4f7f4550d0eaa.png"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/95ca4d60098e46d7b0ca70b275716457.png",
+      "PackagePath": "staticwebassets/images/orders/evidences/95ca4d60098e46d7b0ca70b275716457.png"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/a01e3a5325824bc885334064c7301295.jpeg",
+      "PackagePath": "staticwebassets/images/orders/evidences/a01e3a5325824bc885334064c7301295.jpeg"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/c8b02b1bc85148adb0d294a08e645c51.jpg",
+      "PackagePath": "staticwebassets/images/orders/evidences/c8b02b1bc85148adb0d294a08e645c51.jpg"
+    },
+    {
+      "Id": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/wwwroot/images/orders/evidences/d182b40c64db49fb9b829ce9b8cb6c47.jpg",
+      "PackagePath": "staticwebassets/images/orders/evidences/d182b40c64db49fb9b829ce9b8cb6c47.jpg"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.Orders.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.Orders.API.props",
+      "PackagePath": "build\\Orders.API.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.Orders.API.props",
+      "PackagePath": "buildMultiTargeting\\Orders.API.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.Orders.API.props",
+      "PackagePath": "buildTransitive\\Orders.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

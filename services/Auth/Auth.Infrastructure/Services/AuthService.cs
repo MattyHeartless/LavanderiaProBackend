@@ -4,6 +4,11 @@ using Auth.Application.Interfaces;
 using Auth.Application.DTOs;
 using Auth.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 
 namespace Auth.Infrastructure.Services;
@@ -14,17 +19,20 @@ public class AuthService : IAuthService
     private readonly SignInManager<User> _signInManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly AuthDbContext _dbContext;
+    private readonly IConfiguration _configuration;
 
     public AuthService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         RoleManager<IdentityRole> roleManager,
-        AuthDbContext dbContext)
+        AuthDbContext dbContext,
+        IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
         _dbContext = dbContext;
+        _configuration = configuration;
     }
 
     public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
@@ -180,7 +188,7 @@ public class AuthService : IAuthService
         throw new UnauthorizedAccessException("Invalid credentials");
     }
 
-    // 3. Generar el Token (Aquí iría tu lógica de JWT)
+    var roles = await _userManager.GetRolesAsync(user);
    
 
     // 4. Devolver el DTO con la info que Angular necesita
@@ -190,6 +198,7 @@ public class AuthService : IAuthService
         FullName = user.FullName,
         id = user.Id,
         PhoneNumber = user.PhoneNumber,
+        AccessToken = CreateAccessToken(user, roles),
     };
     }
 
@@ -221,6 +230,7 @@ public class AuthService : IAuthService
             FullName = user.FullName,
             id = user.Id,
             PhoneNumber = user.PhoneNumber,
+            AccessToken = CreateAccessToken(user, roles),
         };
     }
 
@@ -258,6 +268,7 @@ if (!roles.Contains("Admin"))
         FullName = user.FullName,
         id = user.Id,
         PhoneNumber = user.PhoneNumber,
+        AccessToken = CreateAccessToken(user, roles),
     };
     }
 
@@ -299,6 +310,15 @@ if (!roles.Contains("Admin"))
 
     public async Task ChangePasswordAsync(ChangePasswordRequest request)
     {
+        if (string.IsNullOrWhiteSpace(request.Email))
+            throw new InvalidOperationException("Email is required");
+
+        if (string.IsNullOrWhiteSpace(request.CurrentPassword))
+            throw new InvalidOperationException("Current password is required");
+
+        if (string.IsNullOrWhiteSpace(request.NewPassword))
+            throw new InvalidOperationException("New password is required");
+
         var user = await _userManager.FindByEmailAsync(request.Email);
     
         if (user == null)
@@ -414,6 +434,34 @@ if (!roles.Contains("Admin"))
         return MapCouponSummary(userCoupon);
     }
 
+    private string CreateAccessToken(User user, IEnumerable<string> roles)
+    {
+        var key = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is required.");
+        var expiresInMinutes = int.TryParse(_configuration["Jwt:ExpiresInMinutes"], out var configuredExpiration)
+            ? configuredExpiration
+            : 480;
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, user.Id),
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.Email, user.Email ?? string.Empty),
+            new(ClaimTypes.Name, user.FullName ?? user.Email ?? user.Id)
+        };
+
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        var credentials = new SigningCredentials(
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+            SecurityAlgorithms.HmacSha256);
+
+        return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(expiresInMinutes),
+            signingCredentials: credentials));
+    }
+
     private async Task<User> CreateUserAsync(RegisterRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Email))
@@ -474,4 +522,3 @@ if (!roles.Contains("Admin"))
     }
  
 }
-

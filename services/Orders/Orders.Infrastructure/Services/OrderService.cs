@@ -67,13 +67,6 @@ public class OrderService : IOrderRepository
         CancellationToken cancellationToken = default)
     {
         await _orderRepository.AddAsync(order, orderDetails, cancellationToken);
-        
-        foreach (var detail in orderDetails)
-        {
-            detail.OrderId = order.Id;
-            await _orderRepository.AddDetailAsync(detail, cancellationToken);
-        }
-        
         return order.Id;
     }
 

@@ -1,8 +1,11 @@
 using Catalogs.Infrastructure.Persistence;
 using Catalogs.Infrastructure.Repositories;
 using Catalogs.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,14 @@ builder.Services.AddDbContext<CatalogsDbContext>(options =>
 builder.Services.AddScoped<ICatalogsRepository,CatalogsRepository >();
 builder.Services.AddScoped<CatalogsService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is required.");
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true, ValidateAudience = true, ValidateLifetime = true, ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"], ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -25,7 +36,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("http://192.168.1.90","http://localhost:4200","http://localhost:4201","http://localhost:4202","http://localhost:4203")
+                .WithOrigins("http://192.168.100.53","http://localhost:4200","http://localhost:4201","http://localhost:4202","http://localhost:4203")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
@@ -55,8 +66,9 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(absolutePath),
     RequestPath = "/images"
 });
-app.UseAuthorization();
 app.UseCors("AllowAngular");
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 var summaries = new[]
 {

@@ -16,6 +16,7 @@ namespace Catalogs.Domain.Entities
         public string AuthUserId { get; set; } = string.Empty;
         public string ProfileImageUrl { get; set; } = string.Empty;
         public Boolean IsActive { get; set; }
+        public Boolean IsAvailable { get; set; }
+        public DateTime? AvailabilityUpdatedAt { get; set; }
     }
 }
-

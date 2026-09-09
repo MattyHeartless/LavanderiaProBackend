@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Orders.API.DTOs;
 using Orders.Application.DTOs;
 using Orders.Application.Repositories;
@@ -137,6 +138,7 @@ public class OrdersController : ControllerBase
         return Ok(new { message = "Order updated successfully" });
     }
 
+    [Authorize(Roles = "Courier")]
     [HttpPatch("{orderId}/assign-courier")]
     public async Task<IActionResult> AssignCourier(
         Guid orderId,
@@ -275,4 +277,3 @@ public class OrdersController : ControllerBase
         };
     }
 }
-

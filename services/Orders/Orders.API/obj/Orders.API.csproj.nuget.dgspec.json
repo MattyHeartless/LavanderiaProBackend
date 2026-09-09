@@ -1,43 +1,36 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.API\\Orders.API.csproj": {}
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/Orders.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.API\\Orders.API.csproj": {
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/Orders.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.API\\Orders.API.csproj",
+        "projectUniqueName": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/Orders.API.csproj",
         "projectName": "Orders.API",
-        "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.API\\Orders.API.csproj",
-        "packagesPath": "C:\\Users\\Jair\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.API\\obj\\",
+        "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/Orders.API.csproj",
+        "packagesPath": "/Users/jaiman/.nuget/packages/",
+        "outputPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.API/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jair\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/jaiman/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Application\\Orders.Application.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Application\\Orders.Application.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Application/Orders.Application.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Application/Orders.Application.csproj"
               },
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Infrastructure\\Orders.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Infrastructure\\Orders.Infrastructure.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj"
               }
             }
           }
@@ -51,13 +44,16 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.23, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.23, )"
@@ -92,41 +88,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Application\\Orders.Application.csproj": {
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Application/Orders.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Application\\Orders.Application.csproj",
+        "projectUniqueName": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Application/Orders.Application.csproj",
         "projectName": "Orders.Application",
-        "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Application\\Orders.Application.csproj",
-        "packagesPath": "C:\\Users\\Jair\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Application\\obj\\",
+        "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Application/Orders.Application.csproj",
+        "packagesPath": "/Users/jaiman/.nuget/packages/",
+        "outputPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Application/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jair\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/jaiman/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Domain\\Orders.Domain.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Domain\\Orders.Domain.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Domain/Orders.Domain.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Domain/Orders.Domain.csproj"
               }
             }
           }
@@ -140,8 +129,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -162,33 +150,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Domain\\Orders.Domain.csproj": {
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Domain/Orders.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Domain\\Orders.Domain.csproj",
+        "projectUniqueName": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Domain/Orders.Domain.csproj",
         "projectName": "Orders.Domain",
-        "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Domain\\Orders.Domain.csproj",
-        "packagesPath": "C:\\Users\\Jair\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Domain\\obj\\",
+        "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Domain/Orders.Domain.csproj",
+        "packagesPath": "/Users/jaiman/.nuget/packages/",
+        "outputPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jair\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/jaiman/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -206,8 +187,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -228,44 +208,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Infrastructure\\Orders.Infrastructure.csproj": {
+    "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Infrastructure\\Orders.Infrastructure.csproj",
+        "projectUniqueName": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj",
         "projectName": "Orders.Infrastructure",
-        "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Infrastructure\\Orders.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Jair\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Infrastructure\\obj\\",
+        "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj",
+        "packagesPath": "/Users/jaiman/.nuget/packages/",
+        "outputPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Infrastructure/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jair\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/jaiman/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Application\\Orders.Application.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Application\\Orders.Application.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Application/Orders.Application.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Application/Orders.Application.csproj"
               },
-              "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Domain\\Orders.Domain.csproj": {
-                "projectPath": "C:\\Users\\Jair\\Documents\\My Web Sites\\LaundrAppBackend\\LavanderiaProBackend\\services\\Orders\\Orders.Domain\\Orders.Domain.csproj"
+              "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Domain/Orders.Domain.csproj": {
+                "projectPath": "/Users/jaiman/Documents/My Web Sites/LavanderiaProBackend/services/Orders/Orders.Domain/Orders.Domain.csproj"
               }
             }
           }
@@ -279,8 +252,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -303,6 +275,18 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             }
           },
           "imports": [
@@ -321,7 +305,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/8.0.424/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

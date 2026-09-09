@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 using Orders.Application.Repositories;
 using Orders.Infrastructure.Persistence;
 using Orders.Infrastructure.Repositories;
 using Orders.Infrastructure.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,19 @@ builder.Services.AddDbContext<OrdersDbContext>(options =>
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is required.");
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
+{
+    ValidateIssuer = true, ValidateAudience = true, ValidateLifetime = true, ValidateIssuerSigningKey = true,
+    ValidIssuer = builder.Configuration["Jwt:Issuer"], ValidAudience = builder.Configuration["Jwt:Audience"],
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+});
+builder.Services.AddAuthorization();
+builder.Services.AddHttpClient<IOrderNotificationPublisher, OrderNotificationPublisher>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Notifications:BaseUrl"] ?? "http://localhost:5004/api/Notifications/");
+});
+builder.Services.AddHostedService<OrderNotificationOutboxWorker>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -24,7 +40,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("http://192.168.1.90","http://localhost:4200","http://localhost:4201","http://localhost:4202","http://localhost:4203")
+                .WithOrigins("http://192.168.100.53","http://localhost:4200","http://localhost:4201","http://localhost:4202","http://localhost:4203")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
@@ -46,7 +62,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.MapControllers();
 app.UseHttpsRedirection();
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -54,6 +69,8 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 app.UseAuthentication(); 
+app.UseAuthorization();
+app.MapControllers();
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"

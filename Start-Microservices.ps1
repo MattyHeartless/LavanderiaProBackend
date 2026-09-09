@@ -1,6 +1,6 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [ValidateSet('All', 'Auth', 'Profile', 'Catalogs', 'Orders')]
+    [ValidateSet('All', 'Auth', 'Profile', 'Catalogs', 'Orders', 'Notifications')]
     [string[]]$Service = @('All'),
 
     [switch]$InCurrentWindow
@@ -35,6 +35,7 @@ $servicePaths = [ordered]@{
     Profile  = Join-Path $rootPath 'services\Profile\Profile.API'
     Catalogs = Join-Path $rootPath 'services\Catalogs\Catalogs.API'
     Orders   = Join-Path $rootPath 'services\Orders\Orders.API'
+    Notifications = Join-Path $rootPath 'services\Notifications\Notifications.API'
 }
 
 [string[]]$selectedServices = if ($Service -contains 'All') {

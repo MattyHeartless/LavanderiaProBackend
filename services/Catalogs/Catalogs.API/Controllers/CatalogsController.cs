@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using Catalogs.API.DTOs;
 using Catalogs.Infrastructure.Services;
 using Catalogs.Domain.Entities;
@@ -318,6 +320,28 @@ public class CatalogsController : ControllerBase
         return Ok(new { courier });
     }
 
+    [Authorize(Roles = "Courier")]
+    [HttpGet("couriers/me/availability")]
+    public async Task<IActionResult> GetMyAvailability()
+    {
+        var courier = await GetAuthenticatedCourierAsync();
+        return courier is null ? NotFound(new { message = "Courier not found" }) : Ok(new { isAvailable = courier.IsAvailable });
+    }
+
+    [Authorize(Roles = "Courier")]
+    [HttpPatch("couriers/me/availability")]
+    public async Task<IActionResult> UpdateMyAvailability([FromBody] UpdateCourierAvailabilityRequest request)
+    {
+        var courier = await GetAuthenticatedCourierAsync();
+        if (courier is null)
+            return NotFound(new { message = "Courier not found" });
+
+        courier.IsAvailable = request.IsAvailable;
+        courier.AvailabilityUpdatedAt = DateTime.UtcNow;
+        await _catalogsService.UpdateCourierAsync(courier);
+        return Ok(new { isAvailable = courier.IsAvailable });
+    }
+
     [HttpPost("couriers/{courierId}/profile-image")]
     [ProducesResponseType(typeof(UploadProfileImageResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -382,6 +406,14 @@ public class CatalogsController : ControllerBase
     {
         var result = await _catalogsService.DeleteCourierAsync(id);
         return Ok(new { message = "Courier deleted successfully", success = result });
+    }
+
+    private async Task<Courier?> GetAuthenticatedCourierAsync()
+    {
+        var authUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return string.IsNullOrWhiteSpace(authUserId)
+            ? null
+            : await _catalogsService.GetCourierByAuthUserIdAsync(authUserId);
     }
 
     // Coupons
