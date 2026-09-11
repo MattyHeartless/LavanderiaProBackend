@@ -45,6 +45,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 var app = builder.Build();
 
+await app.Services.ApplyPendingMigrationsAsync<CatalogsDbContext>(builder.Configuration, app.Logger);
+
 var imagesRootPath = builder.Configuration["Storage:ImagesRootPath"]
     ?? @"C:\Users\Jair\Documents\My Web Sites\LaundrAppBackend\LavanderiaProBackend\services\Catalogs\images";
 var absolutePath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, imagesRootPath));

@@ -31,6 +31,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 var app = builder.Build();
 
+await app.Services.ApplyPendingMigrationsAsync<ProfileDbContext>(builder.Configuration, app.Logger);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
