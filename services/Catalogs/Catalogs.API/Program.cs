@@ -36,7 +36,10 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("http://192.168.100.53","http://localhost:4200","http://localhost:4201","http://localhost:4202","http://localhost:4203")
+                .WithOrigins("http://192.168.100.53", "http://localhost:4200", "http://localhost:4201", "http://localhost:4202", "http://localhost:4203",
+                    "http://bcl8c20hq8435ht1ejz3u0mf.5.78.222.52.sslip.io",
+                    "http://p2iw9w364eunl2tyotiihcrx.5.78.222.52.sslip.io",
+                    "http://qptlq1wl33v86u3y09b5xfhp.5.78.222.52.sslip.io")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
