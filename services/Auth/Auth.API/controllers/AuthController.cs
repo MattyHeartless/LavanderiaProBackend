@@ -73,7 +73,7 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         return Ok(new { exists });
     }
 
-        [HttpPost("login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         LoginResponse response;
@@ -85,6 +85,24 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         catch (UnauthorizedAccessException ex)
         {
             return Unauthorized(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("google")]
+    public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleLoginRequest request)
+    {
+        try
+        {
+            var response = await _authService.LoginWithGoogleAsync(request);
+            return Ok(response);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
         }
     }
 

@@ -15,6 +15,11 @@
         public string? Password { get; set; }
     }
 
+    public class GoogleLoginRequest
+    {
+        public string? Credential { get; set; }
+    }
+
     public class ChangePasswordRequest
     {
         public string? Email { get; set; }

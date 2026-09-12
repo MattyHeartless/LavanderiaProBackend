@@ -1,4 +1,5 @@
 ﻿
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Auth.Application.Interfaces;
 using Auth.Application.DTOs;
@@ -186,6 +187,97 @@ public class AuthService : IAuthService
             throw new UnauthorizedAccessException("Account is locked");
             
         throw new UnauthorizedAccessException("Invalid credentials");
+    }
+
+    public async Task<LoginResponse> LoginWithGoogleAsync(GoogleLoginRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Credential))
+            throw new UnauthorizedAccessException("Google credential is required");
+
+        var clientId = _configuration["Google:ClientId"];
+        if (string.IsNullOrWhiteSpace(clientId))
+            throw new InvalidOperationException("Google sign-in is not configured");
+
+        GoogleJsonWebSignature.Payload payload;
+        try
+        {
+            payload = await GoogleJsonWebSignature.ValidateAsync(
+                request.Credential,
+                new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { clientId }
+                });
+        }
+        catch (Exception)
+        {
+            throw new UnauthorizedAccessException("Invalid Google credential");
+        }
+
+        if (string.IsNullOrWhiteSpace(payload.Subject) ||
+            string.IsNullOrWhiteSpace(payload.Email) ||
+            payload.EmailVerified != true)
+        {
+            throw new UnauthorizedAccessException("Google account email could not be verified");
+        }
+
+        const string provider = "Google";
+        var user = await _userManager.FindByLoginAsync(provider, payload.Subject);
+
+        if (user is null)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(payload.Email);
+            if (existingUser is not null)
+            {
+                var isGoogleAuthoritativeEmail = payload.Email.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase)
+                    || !string.IsNullOrWhiteSpace(payload.HostedDomain);
+
+                if (!isGoogleAuthoritativeEmail)
+                {
+                    throw new InvalidOperationException(
+                        "An account with this email already exists. Sign in with your password to continue.");
+                }
+
+                var addLoginResult = await _userManager.AddLoginAsync(
+                    existingUser,
+                    new UserLoginInfo(provider, payload.Subject, provider));
+                if (!addLoginResult.Succeeded)
+                {
+                    var errors = string.Join(", ", addLoginResult.Errors.Select(error => error.Description));
+                    throw new InvalidOperationException($"Could not link Google sign-in: {errors}");
+                }
+
+                user = existingUser;
+            }
+
+            if (user is null)
+            {
+                user = new User
+                {
+                    UserName = payload.Email,
+                    Email = payload.Email,
+                    EmailConfirmed = true,
+                    FullName = string.IsNullOrWhiteSpace(payload.Name) ? payload.Email : payload.Name
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    var errors = string.Join(", ", createResult.Errors.Select(error => error.Description));
+                    throw new InvalidOperationException($"Google registration failed: {errors}");
+                }
+
+                var addLoginResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, payload.Subject, provider));
+                if (!addLoginResult.Succeeded)
+                {
+                    await _userManager.DeleteAsync(user);
+                    var errors = string.Join(", ", addLoginResult.Errors.Select(error => error.Description));
+                    throw new InvalidOperationException($"Could not link Google sign-in: {errors}");
+                }
+            }
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+        return CreateLoginResponse(user, roles);
     }
 
     var roles = await _userManager.GetRolesAsync(user);
@@ -461,6 +553,15 @@ if (!roles.Contains("Admin"))
             expires: DateTime.UtcNow.AddMinutes(expiresInMinutes),
             signingCredentials: credentials));
     }
+
+    private LoginResponse CreateLoginResponse(User user, IEnumerable<string> roles) => new()
+    {
+        Email = user.Email ?? string.Empty,
+        FullName = user.FullName ?? string.Empty,
+        id = user.Id,
+        PhoneNumber = user.PhoneNumber ?? string.Empty,
+        AccessToken = CreateAccessToken(user, roles)
+    };
 
     private async Task<User> CreateUserAsync(RegisterRequest request)
     {

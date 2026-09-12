@@ -10,6 +10,7 @@ public interface IAuthService
     Task<RegisterResponse> RegisterCourierAsync(RegisterRequest request);
     Task<bool> CourierAccountExistsAsync(string email);
     Task<LoginResponse> LoginAsync(LoginRequest request);
+    Task<LoginResponse> LoginWithGoogleAsync(GoogleLoginRequest request);
     Task<LoginResponse> LoginCourierAsync(LoginRequest request);
     Task<LoginResponse> LoginAdminAsync(LoginRequest request);
     Task<List<UserSummaryResponse>> GetAllUsers();
