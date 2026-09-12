@@ -189,6 +189,10 @@ public class AuthService : IAuthService
         throw new UnauthorizedAccessException("Invalid credentials");
     }
 
+    var roles = await _userManager.GetRolesAsync(user);
+    return CreateLoginResponse(user, roles);
+    }
+
     public async Task<LoginResponse> LoginWithGoogleAsync(GoogleLoginRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Credential))
@@ -278,20 +282,6 @@ public class AuthService : IAuthService
 
         var roles = await _userManager.GetRolesAsync(user);
         return CreateLoginResponse(user, roles);
-    }
-
-    var roles = await _userManager.GetRolesAsync(user);
-   
-
-    // 4. Devolver el DTO con la info que Angular necesita
-    return new LoginResponse
-    {
-        Email = user.Email,
-        FullName = user.FullName,
-        id = user.Id,
-        PhoneNumber = user.PhoneNumber,
-        AccessToken = CreateAccessToken(user, roles),
-    };
     }
 
     public async Task<LoginResponse> LoginCourierAsync(LoginRequest request)
