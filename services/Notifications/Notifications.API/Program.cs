@@ -8,7 +8,19 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<NotificationsDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("NotificationsDb")));
 builder.Services.Configure<VapidOptions>(builder.Configuration.GetSection("Vapid"));
+builder.Services.Configure<SmsGatewayOptions>(builder.Configuration.GetSection("SmsGateway"));
 builder.Services.AddScoped<WebPushService>();
+builder.Services.AddScoped<SmsNotificationService>();
+builder.Services.AddHttpClient<CourierDirectoryClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Catalogs:BaseUrl"] ?? "http://localhost:5001/api/Catalogs/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
+builder.Services.AddHttpClient<SmsGatewayClient>((_, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["SmsGateway:BaseUrl"] ?? "https://api.sms-gate.app/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is required.");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
 {
@@ -17,6 +29,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
 });
 builder.Services.AddAuthorization();
+builder.Services.AddHostedService<SmsNotificationOutboxWorker>();
 builder.Services.AddCors(options => options.AddPolicy("AllowAngular", policy => policy
     .WithOrigins("http://localhost:4200", "http://localhost:4201", "http://localhost:4202", "http://localhost:4203",
         "http://bcl8c20hq8435ht1ejz3u0mf.5.78.222.52.sslip.io",

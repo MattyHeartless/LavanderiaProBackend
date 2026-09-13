@@ -8,7 +8,7 @@ namespace Notifications.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public sealed class NotificationsController(WebPushService pushService, IConfiguration configuration) : ControllerBase
+public sealed class NotificationsController(WebPushService pushService, SmsNotificationService smsNotificationService, IConfiguration configuration) : ControllerBase
 {
     [Authorize(Roles = "Courier")]
     [HttpGet("push/public-key")]
@@ -33,11 +33,13 @@ public sealed class NotificationsController(WebPushService pushService, IConfigu
     [HttpPost("internal/unassigned-order")]
     public async Task<IActionResult> NotifyNewUnassignedOrder(NewUnassignedOrderNotification request, [FromHeader(Name = "X-Internal-Api-Key")] string? internalApiKey)
     {
-        if (!string.Equals(internalApiKey, configuration["InternalApi:Key"], StringComparison.Ordinal))
+        var expectedInternalApiKey = configuration["InternalApi:Key"];
+        if (string.IsNullOrWhiteSpace(expectedInternalApiKey) || !string.Equals(internalApiKey, expectedInternalApiKey, StringComparison.Ordinal))
             return Unauthorized();
         if (request.OrderId == Guid.Empty)
             return BadRequest(new { message = "OrderId is required" });
 
+        await smsNotificationService.QueueNewOrderAsync(request.OrderId, HttpContext.RequestAborted);
         await pushService.SendNewOrderAsync(request.OrderId);
         return Accepted();
     }

@@ -22,6 +22,24 @@ namespace Notifications.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Notifications.API.Models.SmsNotificationOutbox", b =>
+                {
+                    b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uniqueidentifier");
+                    b.Property<int>("Attempts").HasColumnType("int");
+                    b.Property<DateTime>("CreatedAt").HasColumnType("datetime2");
+                    b.Property<Guid>("CourierId").HasColumnType("uniqueidentifier");
+                    b.Property<string>("LastError").HasMaxLength(2000).HasColumnType("nvarchar(2000)");
+                    b.Property<string>("Message").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
+                    b.Property<DateTime>("NextAttemptAt").HasColumnType("datetime2");
+                    b.Property<Guid>("OrderId").HasColumnType("uniqueidentifier");
+                    b.Property<string>("PhoneNumber").IsRequired().HasMaxLength(20).HasColumnType("nvarchar(20)");
+                    b.Property<DateTime?>("SentAt").HasColumnType("datetime2");
+                    b.HasKey("Id");
+                    b.HasIndex("OrderId", "CourierId").IsUnique();
+                    b.HasIndex("SentAt", "NextAttemptAt", "CreatedAt");
+                    b.ToTable("SmsNotificationOutbox");
+                });
+
             modelBuilder.Entity("Notifications.API.Models.CourierPushSubscription", b =>
                 {
                     b.Property<Guid>("Id")

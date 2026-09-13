@@ -13,11 +13,13 @@ public class CatalogsController : ControllerBase
 {
     private readonly CatalogsService _catalogsService;
     private readonly IFileStorageService _fileStorageService;
+    private readonly IConfiguration _configuration;
 
-    public CatalogsController(CatalogsService catalogsService, IFileStorageService fileStorageService)
+    public CatalogsController(CatalogsService catalogsService, IFileStorageService fileStorageService, IConfiguration configuration)
     {
         _catalogsService = catalogsService;
         _fileStorageService = fileStorageService;
+        _configuration = configuration;
     }
 
     // Services
@@ -298,6 +300,22 @@ public class CatalogsController : ControllerBase
     {
         var couriers = await _catalogsService.GetAllCouriersAsync();
         return Ok(new { couriers });
+    }
+
+    [HttpGet("internal/couriers/notification-targets")]
+    public async Task<IActionResult> GetCourierNotificationTargets([FromHeader(Name = "X-Internal-Api-Key")] string? internalApiKey)
+    {
+        var expectedInternalApiKey = _configuration["InternalApi:Key"];
+        if (string.IsNullOrWhiteSpace(expectedInternalApiKey) || !string.Equals(internalApiKey, expectedInternalApiKey, StringComparison.Ordinal))
+            return Unauthorized();
+
+        var couriers = await _catalogsService.GetAllCouriersAsync();
+        var targets = couriers
+            .Where(courier => courier.IsActive && courier.IsAvailable && !string.IsNullOrWhiteSpace(courier.PhoneNumber))
+            .Select(courier => new { courier.Id, courier.PhoneNumber })
+            .ToList();
+
+        return Ok(new { couriers = targets });
     }
 
     [HttpGet("couriers/{id}")]

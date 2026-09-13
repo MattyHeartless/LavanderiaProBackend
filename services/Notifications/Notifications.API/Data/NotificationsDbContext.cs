@@ -6,6 +6,7 @@ namespace Notifications.API.Data;
 public sealed class NotificationsDbContext(DbContextOptions<NotificationsDbContext> options) : DbContext(options)
 {
     public DbSet<CourierPushSubscription> CourierPushSubscriptions => Set<CourierPushSubscription>();
+    public DbSet<SmsNotificationOutbox> SmsNotificationOutbox => Set<SmsNotificationOutbox>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -17,5 +18,13 @@ public sealed class NotificationsDbContext(DbContextOptions<NotificationsDbConte
         subscription.Property(x => x.Auth).HasMaxLength(512).IsRequired();
         subscription.HasIndex(x => x.Endpoint).IsUnique();
         subscription.HasIndex(x => new { x.AuthUserId, x.IsAvailable, x.IsEnabled });
+
+        var sms = modelBuilder.Entity<SmsNotificationOutbox>();
+        sms.HasKey(x => x.Id);
+        sms.Property(x => x.PhoneNumber).HasMaxLength(20).IsRequired();
+        sms.Property(x => x.Message).HasMaxLength(500).IsRequired();
+        sms.Property(x => x.LastError).HasMaxLength(2000);
+        sms.HasIndex(x => new { x.OrderId, x.CourierId }).IsUnique();
+        sms.HasIndex(x => new { x.SentAt, x.NextAttemptAt, x.CreatedAt });
     }
 }
