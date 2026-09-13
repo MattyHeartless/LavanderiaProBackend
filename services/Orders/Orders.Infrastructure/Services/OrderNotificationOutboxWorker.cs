@@ -23,6 +23,9 @@ public sealed class OrderNotificationOutboxWorker(IServiceScopeFactory scopeFact
                     .Take(25)
                     .ToListAsync(stoppingToken);
 
+                if (pending.Count > 0)
+                    logger.LogInformation("Processing {PendingNotificationCount} pending new-order notification event(s)", pending.Count);
+
                 foreach (var message in pending)
                 {
                     message.Attempts++;
