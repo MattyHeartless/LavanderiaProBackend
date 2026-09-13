@@ -11,10 +11,14 @@ public sealed class SmsNotificationService(NotificationsDbContext db, CourierDir
     public async Task QueueNewOrderAsync(Guid orderId, CancellationToken cancellationToken)
     {
         if (!smsGateway.IsEnabled)
+        {
+            logger.LogWarning("SMS notifications are disabled; order {OrderId} will not receive SMS notifications", orderId);
             return;
+        }
 
         var couriers = await courierDirectory.GetAvailableCouriersAsync(cancellationToken);
         var now = DateTime.UtcNow;
+        var queued = 0;
 
         foreach (var courier in couriers)
         {
@@ -40,9 +44,11 @@ public sealed class SmsNotificationService(NotificationsDbContext db, CourierDir
                 CreatedAt = now,
                 NextAttemptAt = now
             });
+            queued++;
         }
 
         await db.SaveChangesAsync(cancellationToken);
+        logger.LogInformation("Queued {QueuedSmsCount} SMS notification(s) for order {OrderId} from {AvailableCourierCount} available courier(s)", queued, orderId, couriers.Count);
     }
 
     public async Task ProcessPendingAsync(CancellationToken cancellationToken)
@@ -65,6 +71,7 @@ public sealed class SmsNotificationService(NotificationsDbContext db, CourierDir
                 await smsGateway.SendAsync(item.PhoneNumber, item.Message, cancellationToken);
                 item.SentAt = DateTime.UtcNow;
                 item.LastError = null;
+                logger.LogInformation("Sent SMS notification for order {OrderId} to courier {CourierId}", item.OrderId, item.CourierId);
             }
             catch (Exception exception)
             {
