@@ -8,7 +8,7 @@ namespace Notifications.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public sealed class NotificationsController(WebPushService pushService, SmsNotificationService smsNotificationService, IConfiguration configuration) : ControllerBase
+public sealed class NotificationsController(WebPushService pushService, SmsNotificationService smsNotificationService, IConfiguration configuration, ILogger<NotificationsController> logger) : ControllerBase
 {
     [Authorize(Roles = "Courier")]
     [HttpGet("push/public-key")]
@@ -35,12 +35,23 @@ public sealed class NotificationsController(WebPushService pushService, SmsNotif
     {
         var expectedInternalApiKey = configuration["InternalApi:Key"];
         if (string.IsNullOrWhiteSpace(expectedInternalApiKey) || !string.Equals(internalApiKey, expectedInternalApiKey, StringComparison.Ordinal))
+        {
+            logger.LogWarning("Rejected internal new-order notification because its internal API key is invalid or not configured");
             return Unauthorized();
+        }
         if (request.OrderId == Guid.Empty)
             return BadRequest(new { message = "OrderId is required" });
 
+        logger.LogInformation("Received new-order notification for order {OrderId}; resolving SMS recipients", request.OrderId);
         await smsNotificationService.QueueNewOrderAsync(request.OrderId, HttpContext.RequestAborted);
-        await pushService.SendNewOrderAsync(request.OrderId);
+        try
+        {
+            await pushService.SendNewOrderAsync(request.OrderId);
+        }
+        catch (Exception exception)
+        {
+            logger.LogWarning(exception, "Push notification failed for order {OrderId}; SMS processing will continue independently", request.OrderId);
+        }
         return Accepted();
     }
 

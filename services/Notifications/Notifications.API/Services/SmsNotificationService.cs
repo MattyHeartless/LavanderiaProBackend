@@ -16,6 +16,7 @@ public sealed class SmsNotificationService(NotificationsDbContext db, CourierDir
             return;
         }
 
+        logger.LogInformation("Looking up active and available couriers for SMS notification of order {OrderId}", orderId);
         var couriers = await courierDirectory.GetAvailableCouriersAsync(cancellationToken);
         var now = DateTime.UtcNow;
         var queued = 0;
