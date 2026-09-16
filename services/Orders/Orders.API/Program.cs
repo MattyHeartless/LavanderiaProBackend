@@ -30,6 +30,7 @@ builder.Services.AddHttpClient<IOrderNotificationPublisher, OrderNotificationPub
     client.BaseAddress = new Uri(builder.Configuration["Notifications:BaseUrl"] ?? "http://localhost:5004/api/Notifications/");
 });
 builder.Services.AddHostedService<OrderNotificationOutboxWorker>();
+builder.Services.AddHostedService<ClientOrderSmsNotificationOutboxWorker>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

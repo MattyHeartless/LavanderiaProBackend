@@ -15,3 +15,10 @@ public sealed class PushSubscriptionKeys
 
 public sealed class AvailabilityRequest { public bool IsAvailable { get; set; } }
 public sealed class NewUnassignedOrderNotification { public Guid OrderId { get; set; } }
+public sealed class ClientOrderStatusSmsNotification
+{
+    public Guid OrderId { get; set; }
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string? CustomerName { get; set; }
+    public string EventType { get; set; } = string.Empty;
+}

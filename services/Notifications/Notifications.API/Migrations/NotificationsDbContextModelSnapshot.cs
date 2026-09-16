@@ -27,7 +27,8 @@ namespace Notifications.API.Migrations
                     b.Property<Guid>("Id").ValueGeneratedOnAdd().HasColumnType("uniqueidentifier");
                     b.Property<int>("Attempts").HasColumnType("int");
                     b.Property<DateTime>("CreatedAt").HasColumnType("datetime2");
-                    b.Property<Guid>("CourierId").HasColumnType("uniqueidentifier");
+                    b.Property<Guid?>("CourierId").HasColumnType("uniqueidentifier");
+                    b.Property<string>("EventType").IsRequired().HasMaxLength(50).HasColumnType("nvarchar(50)");
                     b.Property<string>("LastError").HasMaxLength(2000).HasColumnType("nvarchar(2000)");
                     b.Property<string>("Message").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
                     b.Property<DateTime>("NextAttemptAt").HasColumnType("datetime2");
@@ -35,7 +36,12 @@ namespace Notifications.API.Migrations
                     b.Property<string>("PhoneNumber").IsRequired().HasMaxLength(20).HasColumnType("nvarchar(20)");
                     b.Property<DateTime?>("SentAt").HasColumnType("datetime2");
                     b.HasKey("Id");
-                    b.HasIndex("OrderId", "CourierId").IsUnique();
+                    b.HasIndex("OrderId", "EventType", "CourierId").IsUnique();
+
+                    b.HasIndex("OrderId", "EventType")
+                        .IsUnique()
+                        .HasDatabaseName("IX_SmsNotificationOutbox_ClientOrderEvent")
+                        .HasFilter("[CourierId] IS NULL");
                     b.HasIndex("SentAt", "NextAttemptAt", "CreatedAt");
                     b.ToTable("SmsNotificationOutbox");
                 });

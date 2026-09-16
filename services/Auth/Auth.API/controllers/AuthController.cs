@@ -1,6 +1,8 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 
 using Auth.Application.Interfaces;
@@ -158,12 +160,17 @@ namespace LavanderiaProBackend.Auth.API.Controllers
     }
 
 
-     [HttpPost("change-password")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         try
         {
-            await _authService.ChangePasswordAsync(request);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+                return Unauthorized();
+
+            await _authService.ChangePasswordAsync(userId, request);
             return Ok(new { message = "Password changed successfully" });
         }
         catch (KeyNotFoundException ex)
@@ -176,9 +183,14 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         }
     }
     
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPut("update-user/{userId}")]
     public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserRequest request)
     {
+        var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!string.Equals(userId, authenticatedUserId, StringComparison.Ordinal))
+            return Forbid();
+
         UpdateUserResponse response;
         try
         {
@@ -192,6 +204,24 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         catch (InvalidOperationException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId))
+            return Unauthorized();
+
+        try
+        {
+            return Ok(await _authService.GetCurrentUserAsync(userId));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
         }
     }
 

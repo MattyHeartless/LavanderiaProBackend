@@ -6,6 +6,9 @@ namespace Notifications.API.Services;
 
 public sealed class SmsNotificationService(NotificationsDbContext db, CourierDirectoryClient courierDirectory, SmsGatewayClient smsGateway, ILogger<SmsNotificationService> logger)
 {
+    private const string CourierNewOrderEventType = "CourierNewOrder";
+    private const string PickupOnTheWayEventType = "PickupOnTheWay";
+    private const string DeliveryOnTheWayEventType = "DeliveryOnTheWay";
     private const string NewOrderMessage = "Nueva recolección disponible. Abre Reparto para verla y asignártela.";
 
     public async Task QueueNewOrderAsync(Guid orderId, CancellationToken cancellationToken)
@@ -31,7 +34,7 @@ public sealed class SmsNotificationService(NotificationsDbContext db, CourierDir
             }
 
             var alreadyQueued = await db.SmsNotificationOutbox
-                .AnyAsync(item => item.OrderId == orderId && item.CourierId == courier.Id, cancellationToken);
+                .AnyAsync(item => item.OrderId == orderId && item.EventType == CourierNewOrderEventType && item.CourierId == courier.Id, cancellationToken);
             if (alreadyQueued)
                 continue;
 
@@ -40,6 +43,7 @@ public sealed class SmsNotificationService(NotificationsDbContext db, CourierDir
                 Id = Guid.NewGuid(),
                 OrderId = orderId,
                 CourierId = courier.Id,
+                EventType = CourierNewOrderEventType,
                 PhoneNumber = phoneNumber,
                 Message = NewOrderMessage,
                 CreatedAt = now,
@@ -50,6 +54,46 @@ public sealed class SmsNotificationService(NotificationsDbContext db, CourierDir
 
         await db.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Queued {QueuedSmsCount} SMS notification(s) for order {OrderId} from {AvailableCourierCount} available courier(s)", queued, orderId, couriers.Count);
+    }
+
+    public async Task QueueClientOrderStatusAsync(ClientOrderStatusSmsNotification request, CancellationToken cancellationToken)
+    {
+        if (!smsGateway.IsEnabled)
+        {
+            logger.LogWarning("SMS notifications are disabled; client status event {EventType} for order {OrderId} will not be sent", request.EventType, request.OrderId);
+            return;
+        }
+
+        var phoneNumber = NormalizeMexicanPhoneNumber(request.PhoneNumber);
+        if (phoneNumber is null)
+        {
+            logger.LogWarning("Client status event {EventType} for order {OrderId} was skipped because the phone number is invalid", request.EventType, request.OrderId);
+            return;
+        }
+
+        var message = GetClientStatusMessage(request.EventType);
+        if (message is null)
+            throw new ArgumentException("Unsupported client SMS event type.", nameof(request));
+
+        var alreadyQueued = await db.SmsNotificationOutbox.AnyAsync(item =>
+            item.OrderId == request.OrderId && item.EventType == request.EventType && item.CourierId == null,
+            cancellationToken);
+        if (alreadyQueued)
+            return;
+
+        var now = DateTime.UtcNow;
+        db.SmsNotificationOutbox.Add(new SmsNotificationOutbox
+        {
+            Id = Guid.NewGuid(),
+            OrderId = request.OrderId,
+            EventType = request.EventType,
+            PhoneNumber = phoneNumber,
+            Message = message,
+            CreatedAt = now,
+            NextAttemptAt = now
+        });
+        await db.SaveChangesAsync(cancellationToken);
+        logger.LogInformation("Queued client SMS status event {EventType} for order {OrderId}", request.EventType, request.OrderId);
     }
 
     public async Task ProcessPendingAsync(CancellationToken cancellationToken)
@@ -72,13 +116,13 @@ public sealed class SmsNotificationService(NotificationsDbContext db, CourierDir
                 await smsGateway.SendAsync(item.PhoneNumber, item.Message, cancellationToken);
                 item.SentAt = DateTime.UtcNow;
                 item.LastError = null;
-                logger.LogInformation("Sent SMS notification for order {OrderId} to courier {CourierId}", item.OrderId, item.CourierId);
+                logger.LogInformation("Sent SMS notification {EventType} for order {OrderId} to {Recipient}", item.EventType, item.OrderId, item.CourierId?.ToString() ?? "client");
             }
             catch (Exception exception)
             {
                 item.LastError = exception.Message[..Math.Min(exception.Message.Length, 2000)];
                 item.NextAttemptAt = DateTime.UtcNow.AddMinutes(Math.Min(30, Math.Pow(2, item.Attempts)));
-                logger.LogWarning(exception, "Could not send SMS for order {OrderId} to courier {CourierId}", item.OrderId, item.CourierId);
+                logger.LogWarning(exception, "Could not send SMS notification {EventType} for order {OrderId} to {Recipient}", item.EventType, item.OrderId, item.CourierId?.ToString() ?? "client");
             }
         }
 
@@ -97,4 +141,11 @@ public sealed class SmsNotificationService(NotificationsDbContext db, CourierDir
             return $"+{digits}";
         return null;
     }
+
+    private static string? GetClientStatusMessage(string eventType) => eventType switch
+    {
+        PickupOnTheWayEventType => "Lavandería a tu casa: ya vamos en camino para recoger tu ropa. Te esperamos pronto.",
+        DeliveryOnTheWayEventType => "Lavandería a tu casa: tu ropa limpia ya va de regreso a tu domicilio. Te avisaremos al llegar.",
+        _ => null
+    };
 }

@@ -22,9 +22,14 @@ public sealed class NotificationsDbContext(DbContextOptions<NotificationsDbConte
         var sms = modelBuilder.Entity<SmsNotificationOutbox>();
         sms.HasKey(x => x.Id);
         sms.Property(x => x.PhoneNumber).HasMaxLength(20).IsRequired();
+        sms.Property(x => x.EventType).HasMaxLength(50).IsRequired();
         sms.Property(x => x.Message).HasMaxLength(500).IsRequired();
         sms.Property(x => x.LastError).HasMaxLength(2000);
-        sms.HasIndex(x => new { x.OrderId, x.CourierId }).IsUnique();
+        sms.HasIndex(x => new { x.OrderId, x.EventType, x.CourierId }).IsUnique();
+        sms.HasIndex(x => new { x.OrderId, x.EventType })
+            .HasDatabaseName("IX_SmsNotificationOutbox_ClientOrderEvent")
+            .IsUnique()
+            .HasFilter("[CourierId] IS NULL");
         sms.HasIndex(x => new { x.SentAt, x.NextAttemptAt, x.CreatedAt });
     }
 }

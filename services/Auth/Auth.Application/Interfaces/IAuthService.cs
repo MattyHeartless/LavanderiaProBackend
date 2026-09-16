@@ -15,8 +15,9 @@ public interface IAuthService
     Task<LoginResponse> LoginAdminAsync(LoginRequest request);
     Task<List<UserSummaryResponse>> GetAllUsers();
     Task<List<UserCouponSummaryResponse>> GetUserCouponsAsync(string userId);
-    Task ChangePasswordAsync(ChangePasswordRequest request);
+    Task ChangePasswordAsync(string userId, ChangePasswordRequest request);
     Task<UpdateUserResponse> UpdateUserAsync(string userId, UpdateUserRequest request);
+    Task<UpdateUserResponse> GetCurrentUserAsync(string userId);
     Task<ValidateUserCouponResponse> ValidateUserCouponAsync(ValidateUserCouponRequest request, string? authenticatedUserId);
     Task<UserCouponSummaryResponse> RedeemUserCouponAsync(RedeemUserCouponRequest request, string? authenticatedUserId);
 

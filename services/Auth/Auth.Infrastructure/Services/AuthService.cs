@@ -116,7 +116,8 @@ public class AuthService : IAuthService
             UserName = request.Email,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
-            FullName = request.FullName
+            FullName = request.FullName,
+            AuthenticationProvider = AuthenticationProviders.Password
         };
 
         var createResult = await _userManager.CreateAsync(user, request.Password);
@@ -172,10 +173,13 @@ public class AuthService : IAuthService
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
     {
        // 1. Buscamos al usuario por email para poder acceder a sus datos después
-    var user = await _userManager.FindByEmailAsync(request.Email);
-    
-    if (user == null)
-        throw new UnauthorizedAccessException("Invalid credentials");
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user == null)
+            throw new UnauthorizedAccessException("Invalid credentials");
+
+        if (user.AuthenticationProvider == AuthenticationProviders.Google)
+            throw new UnauthorizedAccessException("This account must be accessed with Google");
 
     // 2. Verificamos la contraseña
     var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
@@ -224,59 +228,43 @@ public class AuthService : IAuthService
             throw new UnauthorizedAccessException("Google account email could not be verified");
         }
 
-        const string provider = "Google";
+        const string provider = AuthenticationProviders.Google;
         var user = await _userManager.FindByLoginAsync(provider, payload.Subject);
+
+        if (user is not null && user.AuthenticationProvider != AuthenticationProviders.Google)
+            throw new UnauthorizedAccessException("This account must be accessed with its password");
 
         if (user is null)
         {
             var existingUser = await _userManager.FindByEmailAsync(payload.Email);
             if (existingUser is not null)
             {
-                var isGoogleAuthoritativeEmail = payload.Email.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase)
-                    || !string.IsNullOrWhiteSpace(payload.HostedDomain);
-
-                if (!isGoogleAuthoritativeEmail)
-                {
-                    throw new InvalidOperationException(
-                        "An account with this email already exists. Sign in with your password to continue.");
-                }
-
-                var addLoginResult = await _userManager.AddLoginAsync(
-                    existingUser,
-                    new UserLoginInfo(provider, payload.Subject, provider));
-                if (!addLoginResult.Succeeded)
-                {
-                    var errors = string.Join(", ", addLoginResult.Errors.Select(error => error.Description));
-                    throw new InvalidOperationException($"Could not link Google sign-in: {errors}");
-                }
-
-                user = existingUser;
+                throw new InvalidOperationException(
+                    "An account with this email already exists. Sign in with your password to continue.");
             }
 
-            if (user is null)
+            user = new User
             {
-                user = new User
-                {
-                    UserName = payload.Email,
-                    Email = payload.Email,
-                    EmailConfirmed = true,
-                    FullName = string.IsNullOrWhiteSpace(payload.Name) ? payload.Email : payload.Name
-                };
+                UserName = payload.Email,
+                Email = payload.Email,
+                EmailConfirmed = true,
+                FullName = string.IsNullOrWhiteSpace(payload.Name) ? payload.Email : payload.Name,
+                AuthenticationProvider = AuthenticationProviders.Google
+            };
 
-                var createResult = await _userManager.CreateAsync(user);
-                if (!createResult.Succeeded)
-                {
-                    var errors = string.Join(", ", createResult.Errors.Select(error => error.Description));
-                    throw new InvalidOperationException($"Google registration failed: {errors}");
-                }
+            var createResult = await _userManager.CreateAsync(user);
+            if (!createResult.Succeeded)
+            {
+                var errors = string.Join(", ", createResult.Errors.Select(error => error.Description));
+                throw new InvalidOperationException($"Google registration failed: {errors}");
+            }
 
-                var addLoginResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, payload.Subject, provider));
-                if (!addLoginResult.Succeeded)
-                {
-                    await _userManager.DeleteAsync(user);
-                    var errors = string.Join(", ", addLoginResult.Errors.Select(error => error.Description));
-                    throw new InvalidOperationException($"Could not link Google sign-in: {errors}");
-                }
+            var addLoginResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, payload.Subject, provider));
+            if (!addLoginResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(user);
+                var errors = string.Join(", ", addLoginResult.Errors.Select(error => error.Description));
+                throw new InvalidOperationException($"Could not link Google sign-in: {errors}");
             }
         }
 
@@ -290,6 +278,9 @@ public class AuthService : IAuthService
 
         if (user == null)
             throw new UnauthorizedAccessException("Invalid credentials");
+
+        if (user.AuthenticationProvider == AuthenticationProviders.Google)
+            throw new UnauthorizedAccessException("This account must be accessed with Google");
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
@@ -312,6 +303,7 @@ public class AuthService : IAuthService
             FullName = user.FullName,
             id = user.Id,
             PhoneNumber = user.PhoneNumber,
+            AuthenticationProvider = user.AuthenticationProvider,
             AccessToken = CreateAccessToken(user, roles),
         };
     }
@@ -323,6 +315,9 @@ public class AuthService : IAuthService
     
     if (user == null)
         throw new UnauthorizedAccessException("Invalid credentials");
+
+    if (user.AuthenticationProvider == AuthenticationProviders.Google)
+        throw new UnauthorizedAccessException("This account must be accessed with Google");
 
     // 2. Verificamos la contraseña
     var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
@@ -350,6 +345,7 @@ if (!roles.Contains("Admin"))
         FullName = user.FullName,
         id = user.Id,
         PhoneNumber = user.PhoneNumber,
+        AuthenticationProvider = user.AuthenticationProvider,
         AccessToken = CreateAccessToken(user, roles),
     };
     }
@@ -390,21 +386,21 @@ if (!roles.Contains("Admin"))
             .ToListAsync();
     }
 
-    public async Task ChangePasswordAsync(ChangePasswordRequest request)
+    public async Task ChangePasswordAsync(string userId, ChangePasswordRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.Email))
-            throw new InvalidOperationException("Email is required");
-
         if (string.IsNullOrWhiteSpace(request.CurrentPassword))
             throw new InvalidOperationException("Current password is required");
 
         if (string.IsNullOrWhiteSpace(request.NewPassword))
             throw new InvalidOperationException("New password is required");
 
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        var user = await _userManager.FindByIdAsync(userId);
     
         if (user == null)
             throw new KeyNotFoundException("User not found");
+
+        if (user.AuthenticationProvider == AuthenticationProviders.Google)
+            throw new InvalidOperationException("Google accounts do not have a password");
 
         var result = await _userManager.ChangePasswordAsync(
             user,
@@ -439,9 +435,26 @@ if (!roles.Contains("Admin"))
             Id = user.Id,
             Email = user.Email,
             FullName = user.FullName,
-            PhoneNumber = user.PhoneNumber
+            PhoneNumber = user.PhoneNumber,
+            AuthenticationProvider = user.AuthenticationProvider
         };
 
+    }
+
+    public async Task<UpdateUserResponse> GetCurrentUserAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+            throw new KeyNotFoundException("User not found");
+
+        return new UpdateUserResponse
+        {
+            Id = user.Id,
+            Email = user.Email ?? string.Empty,
+            FullName = user.FullName ?? string.Empty,
+            PhoneNumber = user.PhoneNumber ?? string.Empty,
+            AuthenticationProvider = user.AuthenticationProvider
+        };
     }
 
     public async Task<ValidateUserCouponResponse> ValidateUserCouponAsync(ValidateUserCouponRequest request, string? authenticatedUserId)
@@ -550,6 +563,7 @@ if (!roles.Contains("Admin"))
         FullName = user.FullName ?? string.Empty,
         id = user.Id,
         PhoneNumber = user.PhoneNumber ?? string.Empty,
+        AuthenticationProvider = user.AuthenticationProvider,
         AccessToken = CreateAccessToken(user, roles)
     };
 
@@ -566,7 +580,8 @@ if (!roles.Contains("Admin"))
             UserName = request.Email,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
-            FullName = request.FullName
+            FullName = request.FullName,
+            AuthenticationProvider = AuthenticationProviders.Password
         };
 
         var result = await _userManager.CreateAsync(user, request.Password);

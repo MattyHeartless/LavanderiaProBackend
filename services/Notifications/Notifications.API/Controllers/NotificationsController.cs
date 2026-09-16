@@ -55,6 +55,25 @@ public sealed class NotificationsController(WebPushService pushService, SmsNotif
         return Accepted();
     }
 
+    [HttpPost("internal/client-order-status")]
+    public async Task<IActionResult> NotifyClientOrderStatus(ClientOrderStatusSmsNotification request, [FromHeader(Name = "X-Internal-Api-Key")] string? internalApiKey)
+    {
+        var expectedInternalApiKey = configuration["InternalApi:Key"];
+        if (string.IsNullOrWhiteSpace(expectedInternalApiKey) || !string.Equals(internalApiKey, expectedInternalApiKey, StringComparison.Ordinal))
+        {
+            logger.LogWarning("Rejected internal client status notification because its internal API key is invalid or not configured");
+            return Unauthorized();
+        }
+        if (request.OrderId == Guid.Empty || string.IsNullOrWhiteSpace(request.PhoneNumber))
+            return BadRequest(new { message = "OrderId and PhoneNumber are required" });
+
+        if (request.EventType is not "PickupOnTheWay" and not "DeliveryOnTheWay")
+            return BadRequest(new { message = "Unsupported client status notification event type" });
+
+        await smsNotificationService.QueueClientOrderStatusAsync(request, HttpContext.RequestAborted);
+        return Accepted();
+    }
+
     private string GetAuthUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier)
         ?? throw new UnauthorizedAccessException();
 }

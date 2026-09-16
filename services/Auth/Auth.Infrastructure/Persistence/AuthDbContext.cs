@@ -19,6 +19,13 @@ public class AuthDbContext
     {
         base.OnModelCreating(builder);
 
+        builder.Entity<User>(entity =>
+        {
+            entity.Property(x => x.AuthenticationProvider)
+                .HasMaxLength(20)
+                .HasDefaultValue(AuthenticationProviders.Password);
+        });
+
         builder.Entity<UserCoupon>(entity =>
         {
             entity.ToTable("UserCoupons");

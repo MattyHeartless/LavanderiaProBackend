@@ -261,6 +261,26 @@ public class OrderRepository : IOrderRepository
         if (request.Status == OrderStatus.Delivering)
             order.DeliveredAt = DateTime.UtcNow;
 
+        var notificationEventType = request.Status switch
+        {
+            OrderStatus.Recollecting => ClientOrderSmsNotificationEventType.PickupOnTheWay,
+            OrderStatus.Delivering => ClientOrderSmsNotificationEventType.DeliveryOnTheWay,
+            _ => (ClientOrderSmsNotificationEventType?)null
+        };
+
+        if (notificationEventType.HasValue && !string.IsNullOrWhiteSpace(order.UserPhone))
+        {
+            _context.ClientOrderSmsNotificationOutbox.Add(new ClientOrderSmsNotificationOutbox
+            {
+                Id = Guid.NewGuid(),
+                OrderId = order.Id,
+                EventType = notificationEventType.Value,
+                PhoneNumber = order.UserPhone,
+                CustomerName = order.UserName,
+                CreatedAt = DateTime.UtcNow
+            });
+        }
+
         await _context.SaveChangesAsync(cancellationToken);
         return true;
     }

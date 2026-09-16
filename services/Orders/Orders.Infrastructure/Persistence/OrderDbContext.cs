@@ -14,6 +14,7 @@ public class OrdersDbContext : DbContext
     public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
     public DbSet<OrderEvidence> OrderEvidences => Set<OrderEvidence>();
     public DbSet<OrderNotificationOutbox> OrderNotificationOutbox => Set<OrderNotificationOutbox>();
+    public DbSet<ClientOrderSmsNotificationOutbox> ClientOrderSmsNotificationOutbox => Set<ClientOrderSmsNotificationOutbox>();
     public DbSet<DeliveryMode> DeliveryModes => Set<DeliveryMode>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -113,6 +114,18 @@ public class OrdersDbContext : DbContext
         builder.HasKey(x => x.Id);
         builder.HasIndex(x => new { x.ProcessedAt, x.CreatedAt });
         builder.Property(x => x.CreatedAt).IsRequired();
+    });
+
+    modelBuilder.Entity<ClientOrderSmsNotificationOutbox>(builder =>
+    {
+        builder.ToTable("ClientOrderSmsNotificationOutbox");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.EventType).HasConversion<int>().IsRequired();
+        builder.Property(x => x.PhoneNumber).HasMaxLength(30).IsRequired();
+        builder.Property(x => x.CustomerName).HasMaxLength(200);
+        builder.Property(x => x.CreatedAt).IsRequired();
+        builder.HasIndex(x => new { x.OrderId, x.EventType }).IsUnique();
+        builder.HasIndex(x => new { x.ProcessedAt, x.CreatedAt });
     });
 
     modelBuilder.Entity<DeliveryMode>(builder =>
