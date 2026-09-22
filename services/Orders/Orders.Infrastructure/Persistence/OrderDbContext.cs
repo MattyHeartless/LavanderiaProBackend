@@ -16,6 +16,8 @@ public class OrdersDbContext : DbContext
     public DbSet<OrderNotificationOutbox> OrderNotificationOutbox => Set<OrderNotificationOutbox>();
     public DbSet<ClientOrderSmsNotificationOutbox> ClientOrderSmsNotificationOutbox => Set<ClientOrderSmsNotificationOutbox>();
     public DbSet<DeliveryMode> DeliveryModes => Set<DeliveryMode>();
+    public DbSet<CourierPayment> CourierPayments => Set<CourierPayment>();
+    public DbSet<CourierPaymentOrder> CourierPaymentOrders => Set<CourierPaymentOrder>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
@@ -197,6 +199,35 @@ public class OrdersDbContext : DbContext
 
         builder.HasIndex(x => x.OrderId);
         builder.HasIndex(x => x.CreatedAt);
+    });
+
+    modelBuilder.Entity<CourierPayment>(builder =>
+    {
+        builder.ToTable("CourierPayments");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.CourierName).HasMaxLength(200).IsRequired();
+        builder.Property(x => x.PaidByAdminId).HasMaxLength(450).IsRequired();
+        builder.Property(x => x.Note).HasMaxLength(500);
+        builder.Property(x => x.TotalAmount).HasPrecision(18, 2).IsRequired();
+        builder.Property(x => x.PaidAt).IsRequired();
+        builder.HasIndex(x => new { x.CourierGuid, x.PaidAt });
+        builder.HasMany(x => x.Orders)
+            .WithOne(x => x.CourierPayment)
+            .HasForeignKey(x => x.CourierPaymentId)
+            .OnDelete(DeleteBehavior.Restrict);
+    });
+
+    modelBuilder.Entity<CourierPaymentOrder>(builder =>
+    {
+        builder.ToTable("CourierPaymentOrders");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.PaidAmount).HasPrecision(18, 2).IsRequired();
+        builder.HasIndex(x => x.OrderId).IsUnique();
+        builder.HasIndex(x => x.CourierPaymentId);
+        builder.HasOne<Order>()
+            .WithMany()
+            .HasForeignKey(x => x.OrderId)
+            .OnDelete(DeleteBehavior.Restrict);
     });
 }
 

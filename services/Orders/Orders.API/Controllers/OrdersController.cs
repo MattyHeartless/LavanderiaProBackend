@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using Orders.API.DTOs;
 using Orders.Application.DTOs;
 using Orders.Application.Repositories;
@@ -78,6 +79,49 @@ public class OrdersController : ControllerBase
 
         var kpis = await _orderService.GetCourierWorkedOrdersKpisAsync(courierGuid, cancellationToken);
         return Ok(new { message = "Courier KPIs retrieved successfully", data = kpis });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("couriers/payment-summary")]
+    public async Task<IActionResult> GetCourierPaymentSummaries(CancellationToken cancellationToken = default)
+    {
+        var summaries = await _orderService.GetCourierPaymentSummariesAsync(cancellationToken);
+        return Ok(new { message = "Courier payment summaries retrieved successfully", data = summaries });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("courier/{courierGuid}/payment-summary")]
+    public async Task<IActionResult> GetCourierPaymentDetail(Guid courierGuid, CancellationToken cancellationToken = default)
+    {
+        if (courierGuid == Guid.Empty)
+            return BadRequest(new { message = "CourierGuid is required" });
+
+        var detail = await _orderService.GetCourierPaymentDetailAsync(courierGuid, cancellationToken);
+        return Ok(new { message = "Courier payment detail retrieved successfully", data = detail });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("courier/{courierGuid}/payments")]
+    public async Task<IActionResult> RegisterCourierPayment(
+        Guid courierGuid,
+        [FromBody] RegisterCourierPaymentRequest? request,
+        CancellationToken cancellationToken = default)
+    {
+        if (courierGuid == Guid.Empty)
+            return BadRequest(new { message = "CourierGuid is required" });
+
+        if (request?.Note?.Length > 500)
+            return BadRequest(new { message = "Note cannot exceed 500 characters" });
+
+        var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(adminId))
+            return Unauthorized(new { message = "Administrator identity is required" });
+
+        var payment = await _orderService.RegisterCourierPaymentAsync(courierGuid, adminId, request?.Note, cancellationToken);
+        if (payment is null)
+            return Conflict(new { message = "There are no completed unpaid orders for this courier" });
+
+        return Ok(new { message = "Courier payment registered successfully", data = payment });
     }
 
     [HttpGet("delivery-modes")]

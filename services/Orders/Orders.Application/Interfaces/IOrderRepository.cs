@@ -15,6 +15,9 @@ public interface IOrderRepository
 
     Task<IEnumerable<RetrieveOrders>> GetByCourierGuidAsync(Guid courierGuid, CancellationToken cancellationToken = default);
     Task<CourierWorkedOrdersKpisResponse> GetCourierWorkedOrdersKpisAsync(Guid courierGuid, CancellationToken cancellationToken = default);
+    Task<List<CourierPaymentSummaryItem>> GetCourierPaymentSummariesAsync(CancellationToken cancellationToken = default);
+    Task<CourierPaymentDetailResponse> GetCourierPaymentDetailAsync(Guid courierGuid, CancellationToken cancellationToken = default);
+    Task<RegisterCourierPaymentResponse?> RegisterCourierPaymentAsync(Guid courierGuid, string paidByAdminId, string? note, CancellationToken cancellationToken = default);
     Task<List<DeliveryMode>> GetActiveDeliveryModesAsync(CancellationToken cancellationToken = default);
     Task<DeliveryMode?> GetDeliveryModeByIdAsync(int deliveryModeId, CancellationToken cancellationToken = default);
 

@@ -140,6 +140,72 @@ namespace Orders.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orders.Domain.Entities.CourierPayment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourierGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CourierName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("OrdersCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaidByAdminId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourierGuid", "PaidAt");
+
+                    b.ToTable("CourierPayments", (string)null);
+                });
+
+            modelBuilder.Entity("Orders.Domain.Entities.CourierPaymentOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourierPaymentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("PaidAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourierPaymentId");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("CourierPaymentOrders", (string)null);
+                });
+
             modelBuilder.Entity("Orders.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -412,6 +478,28 @@ namespace Orders.Infrastructure.Migrations
 
                     b.Navigation("ShippingAddress")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Orders.Domain.Entities.CourierPaymentOrder", b =>
+                {
+                    b.HasOne("Orders.Domain.Entities.CourierPayment", "CourierPayment")
+                        .WithMany("Orders")
+                        .HasForeignKey("CourierPaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CourierPayment");
+
+                    b.HasOne("Orders.Domain.Entities.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orders.Domain.Entities.CourierPayment", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

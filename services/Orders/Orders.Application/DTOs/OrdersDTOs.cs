@@ -48,3 +48,56 @@ public class RecentCompletedOrderItem
     public DateTime CompletedAt { get; set; }
     public decimal DeliveryFee { get; set; }
 }
+
+public class CourierPaymentSummaryItem
+{
+    public Guid CourierGuid { get; set; }
+    public string CourierName { get; set; } = string.Empty;
+    public int PendingOrdersCount { get; set; }
+    public decimal PendingAmount { get; set; }
+    public DateTime? LastPaidAt { get; set; }
+    public decimal? LastPaidAmount { get; set; }
+}
+
+public class CourierPaymentDetailResponse : CourierPaymentSummaryItem
+{
+    public List<CourierPaymentPendingOrderItem> PendingOrders { get; set; } = new();
+    public List<CourierPaymentHistoryItem> Payments { get; set; } = new();
+}
+
+public class CourierPaymentPendingOrderItem
+{
+    public Guid OrderId { get; set; }
+    public string? CustomerName { get; set; }
+    public DateTime CompletedAt { get; set; }
+    public decimal Amount { get; set; }
+}
+
+public class CourierPaymentHistoryItem
+{
+    public Guid PaymentId { get; set; }
+    public decimal TotalAmount { get; set; }
+    public int OrdersCount { get; set; }
+    public DateTime PaidAt { get; set; }
+    public string? Note { get; set; }
+    public List<CourierPaymentPaidOrderItem> Orders { get; set; } = new();
+}
+
+public class CourierPaymentPaidOrderItem
+{
+    public Guid OrderId { get; set; }
+    public decimal Amount { get; set; }
+}
+
+public class RegisterCourierPaymentRequest
+{
+    public string? Note { get; set; }
+}
+
+public class RegisterCourierPaymentResponse
+{
+    public Guid PaymentId { get; set; }
+    public decimal TotalAmount { get; set; }
+    public int OrdersCount { get; set; }
+    public DateTime PaidAt { get; set; }
+}

@@ -152,6 +152,160 @@ public class OrderRepository : IOrderRepository
         };
     }
 
+    public async Task<List<CourierPaymentSummaryItem>> GetCourierPaymentSummariesAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var pendingOrders = await GetPendingCourierPaymentOrdersQuery()
+            .Select(order => new
+            {
+                CourierGuid = order.CourierGuid!.Value,
+                order.CourierName,
+                order.DeliveryFee
+            })
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        var latestPayments = await _context.CourierPayments
+            .GroupBy(payment => payment.CourierGuid)
+            .Select(group => group.OrderByDescending(payment => payment.PaidAt).First())
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        return pendingOrders
+            .GroupBy(order => order.CourierGuid)
+            .Select(group =>
+            {
+                var latestPayment = latestPayments.FirstOrDefault(payment => payment.CourierGuid == group.Key);
+                return new CourierPaymentSummaryItem
+                {
+                    CourierGuid = group.Key,
+                    CourierName = group.Select(order => order.CourierName).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name)) ?? string.Empty,
+                    PendingOrdersCount = group.Count(),
+                    PendingAmount = group.Sum(order => order.DeliveryFee),
+                    LastPaidAt = latestPayment?.PaidAt,
+                    LastPaidAmount = latestPayment?.TotalAmount
+                };
+            })
+            .OrderByDescending(item => item.PendingAmount)
+            .ToList();
+    }
+
+    public async Task<CourierPaymentDetailResponse> GetCourierPaymentDetailAsync(
+        Guid courierGuid,
+        CancellationToken cancellationToken = default)
+    {
+        var pendingOrders = await GetPendingCourierPaymentOrdersQuery()
+            .Where(order => order.CourierGuid == courierGuid)
+            .OrderBy(order => order.DeliveredAt ?? order.CreatedAt)
+            .Select(order => new CourierPaymentPendingOrderItem
+            {
+                OrderId = order.Id,
+                CustomerName = order.UserName,
+                CompletedAt = order.DeliveredAt ?? order.CreatedAt,
+                Amount = order.DeliveryFee
+            })
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        var payments = await _context.CourierPayments
+            .Where(payment => payment.CourierGuid == courierGuid)
+            .Include(payment => payment.Orders)
+            .OrderByDescending(payment => payment.PaidAt)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        var courierName = pendingOrders.Count > 0
+            ? await _context.Orders
+                .Where(order => order.CourierGuid == courierGuid)
+                .OrderByDescending(order => order.CreatedAt)
+                .Select(order => order.CourierName)
+                .FirstOrDefaultAsync(cancellationToken) ?? string.Empty
+            : payments.FirstOrDefault()?.CourierName ?? string.Empty;
+
+        var latestPayment = payments.FirstOrDefault();
+        return new CourierPaymentDetailResponse
+        {
+            CourierGuid = courierGuid,
+            CourierName = courierName,
+            PendingOrdersCount = pendingOrders.Count,
+            PendingAmount = pendingOrders.Sum(order => order.Amount),
+            LastPaidAt = latestPayment?.PaidAt,
+            LastPaidAmount = latestPayment?.TotalAmount,
+            PendingOrders = pendingOrders,
+            Payments = payments.Select(payment => new CourierPaymentHistoryItem
+            {
+                PaymentId = payment.Id,
+                TotalAmount = payment.TotalAmount,
+                OrdersCount = payment.OrdersCount,
+                PaidAt = payment.PaidAt,
+                Note = payment.Note,
+                Orders = payment.Orders
+                    .OrderBy(paymentOrder => paymentOrder.OrderId)
+                    .Select(paymentOrder => new CourierPaymentPaidOrderItem
+                    {
+                        OrderId = paymentOrder.OrderId,
+                        Amount = paymentOrder.PaidAmount
+                    })
+                    .ToList()
+            }).ToList()
+        };
+    }
+
+    public async Task<RegisterCourierPaymentResponse?> RegisterCourierPaymentAsync(
+        Guid courierGuid,
+        string paidByAdminId,
+        string? note,
+        CancellationToken cancellationToken = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, cancellationToken);
+
+        var pendingOrders = await GetPendingCourierPaymentOrdersQuery()
+            .Where(order => order.CourierGuid == courierGuid)
+            .OrderBy(order => order.Id)
+            .ToListAsync(cancellationToken);
+
+        if (pendingOrders.Count == 0)
+            return null;
+
+        var paidAt = DateTime.UtcNow;
+        var payment = new CourierPayment
+        {
+            Id = Guid.NewGuid(),
+            CourierGuid = courierGuid,
+            CourierName = pendingOrders.Select(order => order.CourierName).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name)) ?? string.Empty,
+            TotalAmount = pendingOrders.Sum(order => order.DeliveryFee),
+            OrdersCount = pendingOrders.Count,
+            PaidAt = paidAt,
+            PaidByAdminId = paidByAdminId,
+            Note = string.IsNullOrWhiteSpace(note) ? null : note.Trim(),
+            Orders = pendingOrders.Select(order => new CourierPaymentOrder
+            {
+                Id = Guid.NewGuid(),
+                OrderId = order.Id,
+                PaidAmount = order.DeliveryFee
+            }).ToList()
+        };
+
+        _context.CourierPayments.Add(payment);
+        await _context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+
+        return new RegisterCourierPaymentResponse
+        {
+            PaymentId = payment.Id,
+            TotalAmount = payment.TotalAmount,
+            OrdersCount = payment.OrdersCount,
+            PaidAt = payment.PaidAt
+        };
+    }
+
+    private IQueryable<Order> GetPendingCourierPaymentOrdersQuery() =>
+        _context.Orders.Where(order =>
+            order.Status == OrderStatus.Completed &&
+            order.CourierGuid.HasValue &&
+            order.CourierGuid != Guid.Empty &&
+            !_context.CourierPaymentOrders.Any(paymentOrder => paymentOrder.OrderId == order.Id));
+
     public async Task<List<DeliveryMode>> GetActiveDeliveryModesAsync(CancellationToken cancellationToken = default)
     {
         return await _context.DeliveryModes
@@ -258,7 +412,7 @@ public class OrderRepository : IOrderRepository
         if (request.Status == OrderStatus.Recollecting)
             order.RecollectedAt = DateTime.UtcNow;
 
-        if (request.Status == OrderStatus.Delivering)
+        if (request.Status == OrderStatus.Completed)
             order.DeliveredAt = DateTime.UtcNow;
 
         var notificationEventType = request.Status switch

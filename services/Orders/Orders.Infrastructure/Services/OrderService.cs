@@ -51,6 +51,15 @@ public class OrderService : IOrderRepository
         return await _orderRepository.GetCourierWorkedOrdersKpisAsync(courierGuid, cancellationToken);
     }
 
+    public Task<List<CourierPaymentSummaryItem>> GetCourierPaymentSummariesAsync(CancellationToken cancellationToken = default) =>
+        _orderRepository.GetCourierPaymentSummariesAsync(cancellationToken);
+
+    public Task<CourierPaymentDetailResponse> GetCourierPaymentDetailAsync(Guid courierGuid, CancellationToken cancellationToken = default) =>
+        _orderRepository.GetCourierPaymentDetailAsync(courierGuid, cancellationToken);
+
+    public Task<RegisterCourierPaymentResponse?> RegisterCourierPaymentAsync(Guid courierGuid, string paidByAdminId, string? note, CancellationToken cancellationToken = default) =>
+        _orderRepository.RegisterCourierPaymentAsync(courierGuid, paidByAdminId, note, cancellationToken);
+
     public async Task<List<DeliveryMode>> GetActiveDeliveryModesAsync(CancellationToken cancellationToken = default)
     {
         return await _orderRepository.GetActiveDeliveryModesAsync(cancellationToken);

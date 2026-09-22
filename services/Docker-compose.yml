@@ -19,7 +19,7 @@ services:
       - "5003:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__AuthConnection=Server=192.168.100.53;Database=LavanderiaPro;User Id=sa;Password=Test123!;TrustServerCertificate=True
+      - ConnectionStrings__AuthConnection=Server=host.docker.internal,1433;Database=LavanderiaPro;User Id=sa;Password=Test123!;TrustServerCertificate=True
  
 
   # 3. Microservicio de Catalogs
@@ -32,7 +32,7 @@ services:
       - "5001:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__CatalogsDb=Server=192.168.100.53;Database=LavanderiaProCatalogs;User Id=sa;Password=Test123!;TrustServerCertificate=True
+      - ConnectionStrings__CatalogsDb=Server=host.docker.internal,1433;Database=LavanderiaProCatalogs;User Id=sa;Password=Test123!;TrustServerCertificate=True
 
   # 4. Microservicio de Orders
   orders-api:
@@ -44,7 +44,7 @@ services:
       - "5252:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__OrdersDb=Server=192.168.100.53;Database=LavanderiaProOrders;User Id=sa;Password=Test123!;TrustServerCertificate=True
+      - ConnectionStrings__OrdersDb=Server=host.docker.internal,1433;Database=LavanderiaProOrders;User Id=sa;Password=Test123!;TrustServerCertificate=True
       - Notifications__BaseUrl=http://notifications-api:8080/api/Notifications/
       - Notifications__InternalApiKey=development-only-notifications-internal-key
 
@@ -57,7 +57,7 @@ services:
       - "5004:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__NotificationsDb=Server=192.168.100.53;Database=LavanderiaProNotifications;User Id=sa;Password=Test123!;TrustServerCertificate=True
+      - ConnectionStrings__NotificationsDb=Server=host.docker.internal,1433;Database=LavanderiaProNotifications;User Id=sa;Password=Test123!;TrustServerCertificate=True
    
 
   # 5. Microservicio de Profile
@@ -70,5 +70,5 @@ services:
       - "5002:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__ProfileConnection=Server=192.168.100.53;Database=LavanderiaProProfile;User Id=sa;Password=Test123!;TrustServerCertificate=True
+      - ConnectionStrings__ProfileConnection=Server=host.docker.internal,1433;Database=LavanderiaProProfile;User Id=sa;Password=Test123!;TrustServerCertificate=True
    
