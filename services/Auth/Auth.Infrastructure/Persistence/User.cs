@@ -6,6 +6,7 @@ public class User : IdentityUser
 {
     public string? FullName { get; set; }
     public string AuthenticationProvider { get; set; } = AuthenticationProviders.Password;
+    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
 public static class AuthenticationProviders

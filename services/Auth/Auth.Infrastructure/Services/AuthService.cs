@@ -353,14 +353,14 @@ if (!roles.Contains("Admin"))
     public async Task<List<UserSummaryResponse>> GetAllUsers()
     {
         var allUsers = _userManager.Users.ToList();
-        var nonAdminUsers = new List<UserSummaryResponse>();
+        var customers = new List<UserSummaryResponse>();
 
         foreach (var user in allUsers)
         {
             var roles = await _userManager.GetRolesAsync(user);
-            if (!roles.Contains("Admin"))
+            if (!roles.Contains("Admin") && !roles.Contains("Courier"))
             {
-                nonAdminUsers.Add(new UserSummaryResponse
+                customers.Add(new UserSummaryResponse
                 {
                     Id = user.Id,
                     Email = user.Email,
@@ -370,7 +370,30 @@ if (!roles.Contains("Admin"))
             }
         }
 
-        return nonAdminUsers;
+        return customers;
+    }
+
+    public async Task<List<RecentCustomerResponse>> GetRecentCustomersAsync(int limit)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .Where(user => user.CreatedAt.HasValue)
+            .Where(user => !_dbContext.UserRoles.Any(userRole =>
+                userRole.UserId == user.Id && _dbContext.Roles.Any(role =>
+                    role.Id == userRole.RoleId &&
+                    (role.NormalizedName == "ADMIN" || role.NormalizedName == "COURIER"))))
+            .OrderByDescending(user => user.CreatedAt)
+            .ThenByDescending(user => user.Id)
+            .Take(limit)
+            .Select(user => new RecentCustomerResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                CreatedAt = user.CreatedAt!.Value
+            })
+            .ToListAsync();
     }
 
     public async Task<List<UserCouponSummaryResponse>> GetUserCouponsAsync(string userId)

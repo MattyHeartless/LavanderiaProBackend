@@ -18,11 +18,13 @@ public class OrdersController : ControllerBase
 
     private readonly OrderService _orderService;
     private readonly IFileStorageService _fileStorageService;
+    private readonly DeliveryModeCatalogService _deliveryModeCatalogService;
 
-    public OrdersController(OrderService orderService, IFileStorageService fileStorageService)
+    public OrdersController(OrderService orderService, IFileStorageService fileStorageService, DeliveryModeCatalogService deliveryModeCatalogService)
     {
         _orderService = orderService;
         _fileStorageService = fileStorageService;
+        _deliveryModeCatalogService = deliveryModeCatalogService;
     }
 
     [HttpGet]
@@ -129,6 +131,60 @@ public class OrdersController : ControllerBase
     {
         var modes = await _orderService.GetActiveDeliveryModesAsync(cancellationToken);
         return Ok(new { message = "Delivery modes retrieved successfully", data = modes });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("delivery-modes/admin")]
+    public async Task<IActionResult> GetAllDeliveryModes(CancellationToken cancellationToken = default)
+    {
+        var modes = await _deliveryModeCatalogService.ListAsync(cancellationToken);
+        return Ok(new { message = "Delivery modes retrieved successfully", data = modes });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("delivery-modes/admin/{id:int}")]
+    public async Task<IActionResult> GetAdminDeliveryMode(int id, CancellationToken cancellationToken = default)
+    {
+        var mode = await _deliveryModeCatalogService.GetAsync(id, cancellationToken);
+        return mode is null ? NotFound(new { message = "Modo de entrega no encontrado." }) : Ok(new { data = mode });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("delivery-modes")]
+    public async Task<IActionResult> CreateDeliveryMode([FromBody] DeliveryModeSaveRequest request, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var mode = await _deliveryModeCatalogService.CreateAsync(request, cancellationToken);
+            return CreatedAtAction(nameof(GetAdminDeliveryMode), new { id = mode.Id }, new { message = "Modo de entrega creado.", data = mode });
+        }
+        catch (ArgumentException exception) { return BadRequest(new { message = exception.Message }); }
+        catch (DeliveryModeConflictException exception) { return Conflict(new { message = exception.Message }); }
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("delivery-modes/{id:int}")]
+    public async Task<IActionResult> UpdateDeliveryMode(int id, [FromBody] DeliveryModeSaveRequest request, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var mode = await _deliveryModeCatalogService.UpdateAsync(id, request, cancellationToken);
+            return mode is null ? NotFound(new { message = "Modo de entrega no encontrado." }) : Ok(new { message = "Modo de entrega actualizado.", data = mode });
+        }
+        catch (ArgumentException exception) { return BadRequest(new { message = exception.Message }); }
+        catch (DeliveryModeConflictException exception) { return Conflict(new { message = exception.Message }); }
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("delivery-modes/{id:int}")]
+    public async Task<IActionResult> DeleteDeliveryMode(int id, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var deleted = await _deliveryModeCatalogService.DeleteAsync(id, cancellationToken);
+            return deleted ? NoContent() : NotFound(new { message = "Modo de entrega no encontrado." });
+        }
+        catch (DeliveryModeConflictException exception) { return Conflict(new { message = exception.Message }); }
     }
 
     [HttpPost]

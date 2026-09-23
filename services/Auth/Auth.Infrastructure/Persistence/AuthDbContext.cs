@@ -24,6 +24,7 @@ public class AuthDbContext
             entity.Property(x => x.AuthenticationProvider)
                 .HasMaxLength(20)
                 .HasDefaultValue(AuthenticationProviders.Password);
+            entity.HasIndex(x => x.CreatedAt);
         });
 
         builder.Entity<UserCoupon>(entity =>

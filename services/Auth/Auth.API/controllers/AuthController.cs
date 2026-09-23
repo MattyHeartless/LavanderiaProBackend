@@ -145,6 +145,16 @@ namespace LavanderiaProBackend.Auth.API.Controllers
         return Ok(users);
     }
 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [HttpGet("users/recent-customers")]
+    public async Task<IActionResult> GetRecentCustomers([FromQuery] int limit = 50)
+    {
+        if (limit is < 1 or > 50)
+            return BadRequest(new { message = "Limit must be between 1 and 50." });
+
+        return Ok(await _authService.GetRecentCustomersAsync(limit));
+    }
+
     [HttpGet("users/{userId}/coupons")]
     public async Task<IActionResult> GetUserCoupons(string userId)
     {
